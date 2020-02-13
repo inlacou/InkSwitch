@@ -30,6 +30,40 @@ class InkSwitch: FrameLayout {
 	private var markerView: View? = null
 	private var displays: LinearLayout? = null
 	
+	var innerMargin: Float = 15f
+		set(value) {
+			field = value
+			startUpdate()
+		}
+	var itemWidth = 100f
+		set(value) {
+			field = value
+			startUpdate()
+		}
+	var itemHeight = 100f
+		set(value) {
+			field = value
+			startUpdate()
+		}
+	var items: List<InkSwitchItem>? = null
+		set(value) {
+			field = value
+			heavyUpdate()
+		}
+	
+	private val totalWidth: Float get() = itemWidth*(items?.size ?: 0)+innerMargin*2
+	private val totalHeight: Float get() = itemHeight+innerMargin*2
+	
+	private var currentPosition: Int = 0
+	private var fingerDown = false
+	val currentItem get() = items?.get(currentPosition)
+	
+	var generalCornerRadii: List<Float>? = listOf(10000f)
+	var markerCornerRadii: List<Float>? = null
+		get() { return field ?: generalCornerRadii }
+	var backgroundGradientOrientation: GradientDrawable.Orientation = GradientDrawable.Orientation.TOP_BOTTOM
+	var markerGradientOrientation: GradientDrawable.Orientation = GradientDrawable.Orientation.TOP_BOTTOM
+	
 	/**
 	 * Fired on any value change by user touch movement or set programmatically
 	 */
@@ -63,40 +97,6 @@ class InkSwitch: FrameLayout {
 		startUpdate()
 		updateBackground()
 	}
-	
-	var innerMargin: Float = 15f
-		set(value) {
-			field = value
-			startUpdate()
-		}
-	var itemWidth = 100f
-		set(value) {
-			field = value
-			startUpdate()
-		}
-	var itemHeight = 100f
-		set(value) {
-			field = value
-			startUpdate()
-		}
-	var items: List<InkSwitchItem>? = null
-		set(value) {
-			field = value
-			heavyUpdate()
-		}
-	
-	private val totalWidth: Float get() = itemWidth*(items?.size ?: 0)+innerMargin*2
-	private val totalHeight: Float get() = itemHeight+innerMargin*2
-	
-	private var currentPosition: Int = 0
-	private var fingerDown = false
-	val currentItem get() = items?.get(currentPosition)
-	
-	var generalCornerRadii: List<Float>? = listOf(100f)
-	var markerCornerRadii: List<Float>? = null
-		get() { return field ?: generalCornerRadii }
-	var backgroundGradientOrientation: GradientDrawable.Orientation = GradientDrawable.Orientation.TOP_BOTTOM
-	var markerGradientOrientation: GradientDrawable.Orientation = GradientDrawable.Orientation.TOP_BOTTOM
 	
 	fun setItemByIndex(index: Int, fromUser: Boolean) {
 		val changed = index!=currentPosition

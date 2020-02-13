@@ -43,22 +43,11 @@ class FirstFragment : Fragment() {
 						textIconColorActive = resources.getColorCompat(R.color.basic_black),
 						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
 						backgroundColor = resources.getColorCompat(R.color.basic_green_dark)
-				),
-				InkSwitchItemText(
-						text = "WTF",
-						padding = 10,
-						textIconColorActive = resources.getColorCompat(R.color.basic_black),
-						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
-						backgroundColor = resources.getColorCompat(R.color.basic_green)
 				))
 		
-		inkswitch.onValueChangeListener = { index, fromUser ->
-			Toast.makeText(context!!, index.toString(), Toast.LENGTH_LONG).show()
-		}
+		inkswitch.onValueChangeListener = { index, fromUser -> Toast.makeText(context!!, index.toString(), Toast.LENGTH_LONG).show() }
 		
-		view.findViewById<Button>(R.id.button_first).setOnClickListener {
-			findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-		}
+		view.findViewById<Button>(R.id.button_first).setOnClickListener { findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment) }
 	}
 }
 

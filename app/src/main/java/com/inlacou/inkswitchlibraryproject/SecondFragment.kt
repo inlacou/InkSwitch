@@ -27,24 +27,26 @@ class SecondFragment : Fragment() {
 	
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		inkswitch?.itemWidth = 200f
+		inkswitch?.itemHeight = 200f
 		inkswitch?.items = listOf(
 				InkSwitchItemIcon(
 						iconResId = R.drawable.space_invader,
-						padding = 10,
+						padding = 30,
 						textIconColorActive = resources.getColorCompat(R.color.basic_black),
 						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
 						backgroundColor = resources.getColorCompat(R.color.basic_black)
 				),
 				InkSwitchItemIcon(
 						iconResId = R.drawable.space_invader,
-						padding = 10,
+						padding = 30,
 						textIconColorActive = resources.getColorCompat(R.color.basic_black),
 						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
 						backgroundColor = resources.getColorCompat(R.color.basic_green_dark)
 				),
 				InkSwitchItemIcon(
 						iconResId = R.drawable.space_invader,
-						padding = 10,
+						padding = 30,
 						textIconColorActive = resources.getColorCompat(R.color.basic_black),
 						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
 						backgroundColor = resources.getColorCompat(R.color.basic_green)
