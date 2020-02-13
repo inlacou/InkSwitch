@@ -13,3 +13,4 @@ class InkSwitchItemText(
 		padding = padding,
 		selected = false
 )
+//TODO other text attributes
