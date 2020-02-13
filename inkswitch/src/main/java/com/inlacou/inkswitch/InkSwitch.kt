@@ -150,12 +150,14 @@ class InkSwitch: FrameLayout {
 	private fun lightUpdate() {
 		displays?.childViews?.forEachIndexed { index, view ->
 			val item = items?.get(index)
-			if(view is TextView) {
-				if(item!=null) view.setTextColor(if(index==currentPosition) item.textIconColorActive else item.textIconColorInactive)
-			} else if(view is ImageView) {
-				if(item!=null) view.tintByColor(if(index==currentPosition) item.textIconColorActive else item.textIconColorInactive)
+			if(item!=null) {
+				if (view is TextView) {
+					view.setTextColor(if (index == currentPosition) item.textIconColorActive else item.textIconColorInactive)
+				} else if (view is ImageView) {
+					view.tintByColor(if (index == currentPosition) item.textIconColorActive else item.textIconColorInactive)
+				}
+				view.setPadding(item.padding, item.padding, item.padding, item.padding)
 			}
-			view.requestLayout()
 		}
 		displays?.setPadding(innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt())
 		displays?.layoutParams?.width  = totalWidth.roundToInt()

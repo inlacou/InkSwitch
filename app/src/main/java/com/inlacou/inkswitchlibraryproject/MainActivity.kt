@@ -1,5 +1,7 @@
 package com.inlacou.inkswitchlibraryproject
 
+import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
@@ -35,5 +37,13 @@ class MainActivity : AppCompatActivity() {
 			R.id.action_settings -> true
 			else -> super.onOptionsItemSelected(item)
 		}
+	}
+}
+
+internal fun Resources.getColorCompat(resId: Int): Int {
+	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+		getColor(resId, null)
+	}else{
+		getColor(resId)
 	}
 }

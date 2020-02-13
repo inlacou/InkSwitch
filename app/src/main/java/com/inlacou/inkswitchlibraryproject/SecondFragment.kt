@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.fragment.findNavController
+import com.inlacou.inkswitch.InkSwitchItemIcon
+import com.inlacou.inkswitch.InkSwitchItemText
+import kotlinx.android.synthetic.main.fragment_first.*
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -23,6 +26,28 @@ class SecondFragment : Fragment() {
 	
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		inkswitch?.items = listOf(
+				InkSwitchItemIcon(
+						iconResId = R.drawable.space_invader,
+						padding = 10,
+						textIconColorActive = resources.getColorCompat(R.color.basic_black),
+						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
+						backgroundColor = resources.getColorCompat(R.color.basic_black)
+				),
+				InkSwitchItemIcon(
+						iconResId = R.drawable.space_invader,
+						padding = 10,
+						textIconColorActive = resources.getColorCompat(R.color.basic_black),
+						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
+						backgroundColor = resources.getColorCompat(R.color.basic_green_dark)
+				),
+				InkSwitchItemIcon(
+						iconResId = R.drawable.space_invader,
+						padding = 10,
+						textIconColorActive = resources.getColorCompat(R.color.basic_black),
+						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
+						backgroundColor = resources.getColorCompat(R.color.basic_green)
+				))
 		
 		view.findViewById<Button>(R.id.button_second).setOnClickListener {
 			findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)

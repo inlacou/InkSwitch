@@ -31,18 +31,21 @@ class FirstFragment : Fragment() {
 		inkswitch?.items = listOf(
 				InkSwitchItemText(
 						text = "OFF",
+						padding = 10,
 						textIconColorActive = resources.getColorCompat(R.color.basic_black),
 						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
 						backgroundColor = resources.getColorCompat(R.color.basic_black)
 				),
 				InkSwitchItemText(
 						text = "ON",
+						padding = 10,
 						textIconColorActive = resources.getColorCompat(R.color.basic_black),
 						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
 						backgroundColor = resources.getColorCompat(R.color.basic_green_dark)
 				),
 				InkSwitchItemText(
 						text = "WTF",
+						padding = 10,
 						textIconColorActive = resources.getColorCompat(R.color.basic_black),
 						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
 						backgroundColor = resources.getColorCompat(R.color.basic_green)
@@ -54,10 +57,3 @@ class FirstFragment : Fragment() {
 	}
 }
 
-internal fun Resources.getColorCompat(resId: Int): Int {
-	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-		getColor(resId, null)
-	}else{
-		getColor(resId)
-	}
-}
