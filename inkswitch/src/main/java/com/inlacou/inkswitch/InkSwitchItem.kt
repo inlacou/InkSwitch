@@ -13,4 +13,6 @@ abstract class InkSwitchItem(
 				"| textIconColorInactive: $textIconColorInactive"
 	}
 	
+	//TODO add gradient support for background and marker
+	
 }
