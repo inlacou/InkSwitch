@@ -28,27 +28,9 @@ class SecondFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		inkswitch?.items = listOf(
-				InkSwitchItemIcon(
-						iconResId = R.drawable.space_invader,
-						padding = 30,
-						textIconColorActive = resources.getColorCompat(R.color.basic_black),
-						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
-						backgroundColor = resources.getColorCompat(R.color.basic_black)
-				),
-				InkSwitchItemIcon(
-						iconResId = R.drawable.space_invader,
-						padding = 30,
-						textIconColorActive = resources.getColorCompat(R.color.basic_black),
-						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
-						backgroundColor = resources.getColorCompat(R.color.basic_green_dark)
-				),
-				InkSwitchItemIcon(
-						iconResId = R.drawable.space_invader,
-						padding = 30,
-						textIconColorActive = resources.getColorCompat(R.color.basic_black),
-						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
-						backgroundColor = resources.getColorCompat(R.color.basic_green)
-				))
+				InkSwitchItemIcon(iconResId = R.drawable.space_invader),
+				InkSwitchItemIcon(iconResId = R.drawable.space_invader),
+				InkSwitchItemIcon(iconResId = R.drawable.space_invader))
 		
 		inkswitch.onValueSetListener = { index, fromUser ->
 			Toast.makeText(context!!, index.toString(), Toast.LENGTH_LONG).show()

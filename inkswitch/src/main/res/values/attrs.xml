@@ -8,12 +8,6 @@
 		<attr name="itemWidth" format="dimension|reference"/>
 		<attr name="itemHeight" format="dimension|reference"/>
 		<attr name="innerMargin" format="dimension|reference"/>
-
-		<attr name="backgroundColor" format="color|reference"/>
-		<attr name="markerColor" format="color|reference"/>
-		<attr name="backgroundColors" format="reference"/>
-		<attr name="markerColors" format="reference"/>
-
 		<attr name="backgroundGradientOrientation" format="enum">
 			<enum name="TOP_BOTTOM" value="0"/>
 			<enum name="TR_BL" value="1"/>
@@ -24,7 +18,6 @@
 			<enum name="LEFT_RIGHT" value="6"/>
 			<enum name="TL_BR" value="7"/>
 		</attr>
-
 		<attr name="markerGradientOrientation" format="enum">
 			<enum name="TOP_BOTTOM" value="0"/>
 			<enum name="TR_BL" value="1"/>
@@ -35,6 +28,13 @@
 			<enum name="LEFT_RIGHT" value="6"/>
 			<enum name="TL_BR" value="7"/>
 		</attr>
+
+		<attr name="backgroundColor" format="color|reference"/>
+		<attr name="markerColor" format="color|reference"/>
+		<attr name="textIconColorActive" format="color|reference"/>
+		<attr name="textIconColorInactive" format="color|reference"/>
+		<attr name="backgroundColors" format="reference"/>
+		<attr name="markerColors" format="reference"/>
 
 	</declare-styleable>
 </resources>

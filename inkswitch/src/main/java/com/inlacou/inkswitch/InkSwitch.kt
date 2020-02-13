@@ -30,6 +30,23 @@ class InkSwitch: FrameLayout {
 	private var markerView: View? = null
 	private var displays: LinearLayout? = null
 	
+	/**
+	 * Color array, not color resource array
+	 */
+	val baseBackgroundColors: MutableList<Int> = mutableListOf(context.getColorCompat(R.color.inkswitch_background_default))
+	/**
+	 * Color array, not color resource array
+	 */
+	val baseMarkerColors: MutableList<Int> = mutableListOf(context.getColorCompat(R.color.inkswitch_marker_default))
+	/**
+	 * Color, not color resource
+	 */
+	var baseTextIconColorActive: Int = context.getColorCompat(R.color.inkswitch_text_default_active)
+	/**
+	 * Color, not color resource
+	 */
+	var baseTextIconColorInactive: Int = context.getColorCompat(R.color.inkswitch_text_default_inactive)
+	
 	var innerMargin: Float = 15f
 		set(value) {
 			field = value
@@ -79,35 +96,91 @@ class InkSwitch: FrameLayout {
 	
 	private fun readAttrs(attrs: AttributeSet) {
 		val ta = context.obtainStyledAttributes(attrs, R.styleable.InkSwitch, 0, 0)
-		if (ta.hasValue(R.styleable.InkSwitch_itemWidth)) {
-			itemWidth = ta.getDimension(R.styleable.InkSwitch_itemWidth, itemWidth)
-		}
-		if (ta.hasValue(R.styleable.InkSwitch_itemHeight)) {
-			itemHeight = ta.getDimension(R.styleable.InkSwitch_itemHeight, itemHeight)
-		}
-		if (ta.hasValue(R.styleable.InkSwitch_editModeItemNumber)) {
-			editModeItemNumber = ta.getInt(R.styleable.InkSwitch_editModeItemNumber, editModeItemNumber)
-		}
-		if (ta.hasValue(R.styleable.InkSwitch_innerMargin)) {
-			innerMargin = ta.getDimension(R.styleable.InkSwitch_innerMargin, innerMargin)
-		}
-		if (ta.hasValue(R.styleable.InkSwitch_corners)) {
-			val aux = ta.getDimension(R.styleable.InkSwitch_corners, -10f)
-			if(aux!=-10f) {
-				generalCornerRadii = listOf(aux)
+		try {
+			if (ta.hasValue(R.styleable.InkSwitch_itemWidth)) {
+				itemWidth = ta.getDimension(R.styleable.InkSwitch_itemWidth, itemWidth)
 			}
-		}
-		if (ta.hasValue(R.styleable.InkSwitch_backgroundCorners)) {
-			val aux = ta.getDimension(R.styleable.InkSwitch_backgroundCorners, -10f)
-			if(aux!=-10f) {
-				backgroundCornerRadii = listOf(aux)
+			if (ta.hasValue(R.styleable.InkSwitch_itemHeight)) {
+				itemHeight = ta.getDimension(R.styleable.InkSwitch_itemHeight, itemHeight)
 			}
-		}
-		if (ta.hasValue(R.styleable.InkSwitch_markerCorners)) {
-			val aux = ta.getDimension(R.styleable.InkSwitch_markerCorners, -10f)
-			if(aux!=-10f) {
-				markerCornerRadii = listOf(aux)
+			if (ta.hasValue(R.styleable.InkSwitch_editModeItemNumber)) {
+				editModeItemNumber = ta.getInt(R.styleable.InkSwitch_editModeItemNumber, editModeItemNumber)
 			}
+			if (ta.hasValue(R.styleable.InkSwitch_innerMargin)) {
+				innerMargin = ta.getDimension(R.styleable.InkSwitch_innerMargin, innerMargin)
+			}
+			if (ta.hasValue(R.styleable.InkSwitch_corners)) {
+				val aux = ta.getDimension(R.styleable.InkSwitch_corners, -10f)
+				if(aux!=-10f) {
+					generalCornerRadii = listOf(aux)
+				}
+			}
+			if (ta.hasValue(R.styleable.InkSwitch_backgroundCorners)) {
+				val aux = ta.getDimension(R.styleable.InkSwitch_backgroundCorners, -10f)
+				if(aux!=-10f) {
+					backgroundCornerRadii = listOf(aux)
+				}
+			}
+			if (ta.hasValue(R.styleable.InkSwitch_markerCorners)) {
+				val aux = ta.getDimension(R.styleable.InkSwitch_markerCorners, -10f)
+				if(aux!=-10f) {
+					markerCornerRadii = listOf(aux)
+				}
+			}
+			if (ta.hasValue(R.styleable.InkSwitch_backgroundGradientOrientation)) {
+				ta.getInt(R.styleable.InkSwitch_backgroundGradientOrientation, -1).let {
+					backgroundGradientOrientation = if(it==-1) backgroundGradientOrientation
+					else GradientDrawable.Orientation.values()[it]
+				}
+			}
+			if (ta.hasValue(R.styleable.InkSwitch_markerGradientOrientation)) {
+				ta.getInt(R.styleable.InkSwitch_markerGradientOrientation, -1).let {
+					markerGradientOrientation = if(it==-1) markerGradientOrientation
+					else GradientDrawable.Orientation.values()[it]
+				}
+			}
+			if (ta.hasValue(R.styleable.InkSwitch_backgroundColor)) {
+				val aux = ta.getColor(R.styleable.InkSwitch_backgroundColor, -1)
+				if(aux!=-1) {
+					baseBackgroundColors.apply { clear(); add(aux) }
+				}
+			}
+			if (ta.hasValue(R.styleable.InkSwitch_backgroundColors)) {
+				ta.resources.getIntArray(ta.getResourceId(R.styleable.InkSwitch_backgroundColors, -1)).toList().let {
+					if(it.isNotEmpty()) {
+						baseMarkerColors.clear()
+						it.forEach { baseMarkerColors.add(it) }
+					}
+				}
+			}
+			if (ta.hasValue(R.styleable.InkSwitch_markerColor)) {
+				val aux = ta.getColor(R.styleable.InkSwitch_markerColor, -1)
+				if(aux!=-1) {
+					baseMarkerColors.apply { clear(); add(aux) }
+				}
+			}
+			if (ta.hasValue(R.styleable.InkSwitch_markerColors)) {
+				ta.resources.getIntArray(ta.getResourceId(R.styleable.InkSwitch_markerColors, -1)).toList().let {
+					if(it.isNotEmpty()) {
+						baseMarkerColors.clear()
+						it.forEach { baseMarkerColors.add(it) }
+					}
+				}
+			}
+			if (ta.hasValue(R.styleable.InkSwitch_textIconColorActive)) {
+				val aux = ta.getColor(R.styleable.InkSwitch_textIconColorActive, -1)
+				if(aux!=-1) {
+					baseTextIconColorActive = aux
+				}
+			}
+			if (ta.hasValue(R.styleable.InkSwitch_textIconColorInactive)) {
+				val aux = ta.getColor(R.styleable.InkSwitch_textIconColorInactive, -1)
+				if(aux!=-1) {
+					baseTextIconColorInactive = aux
+				}
+			}
+		}finally {
+			ta.recycle()
 		}
 		setListeners()
 		lightUpdate()
@@ -214,10 +287,11 @@ class InkSwitch: FrameLayout {
 		displays?.childViews?.forEachIndexed { index, view ->
 			val item = items?.get(index)
 			if(item!=null) {
+				val color = if (index==currentPosition) (item.textIconColorActive  ?: baseTextIconColorActive) else (item.textIconColorInactive ?: baseTextIconColorInactive)
 				if (view is TextView) {
-					view.setTextColor(if (index == currentPosition) item.textIconColorActive else item.textIconColorInactive)
+					view.setTextColor(color)
 				} else if (view is ImageView) {
-					view.tintByColor(if (index == currentPosition) item.textIconColorActive else item.textIconColorInactive)
+					view.tintByColor(color)
 				}
 				view.setPadding(item.padding, item.padding, item.padding, item.padding)
 			}
