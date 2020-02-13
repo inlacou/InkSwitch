@@ -7,7 +7,7 @@
 	tools:context=".FirstFragment">
 
 	<com.inlacou.inkswitch.InkSwitch
-		android:id="@+id/textview_first"
+		android:id="@+id/inkswitch"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		app:layout_constraintBottom_toTopOf="@id/button_first"
@@ -23,5 +23,5 @@
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/textview_first" />
+		app:layout_constraintTop_toBottomOf="@+id/inkswitch" />
 </androidx.constraintlayout.widget.ConstraintLayout>

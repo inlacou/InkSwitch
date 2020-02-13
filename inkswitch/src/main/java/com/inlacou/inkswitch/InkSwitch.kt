@@ -57,30 +57,22 @@ class InkSwitch: FrameLayout {
 			field = value
 			startUpdate()
 		}
-	val items: List<InkSwitchItem>? = listOf(
+	var items: List<InkSwitchItem>? = listOf(
 			InkSwitchItemText(
 					text = "OFF",
 					textIconColorActive = (R.color.inkswitch_text_default_active),
-					textIconColorInactive = (R.color.basic_pink),
-					backgroundColorActive = (R.color.inkswitch_background_default_active),
-					backgroundColorInactive = (R.color.basic_cyan)
+					textIconColorInactive = (R.color.inkswitch_text_default_inactive),
+					backgroundColor = (R.color.inkswitch_background_default)
 			),InkSwitchItemText(
-					text = "ON",
-					textIconColorActive = (R.color.basic_red),
-					textIconColorInactive = (R.color.basic_red),
-					backgroundColorActive = (R.color.basic_red),
-					backgroundColorInactive = (R.color.basic_red)
-			),InkSwitchItemText(
-					text = "WTF",
-					textIconColorActive = (R.color.inkswitch_text_default_active),
-					textIconColorInactive = (R.color.basic_pink),
-					backgroundColorActive = (R.color.inkswitch_background_default_active),
-					backgroundColorInactive = (R.color.basic_pink)
-			))
+			text = "ON",
+			textIconColorActive = (R.color.inkswitch_text_default_active),
+			textIconColorInactive = (R.color.inkswitch_text_default_inactive),
+			backgroundColor = (R.color.inkswitch_background_default)
+	))
 	
 	private val totalWidth: Float get() = itemWidth*(items?.size ?: 0)+innerMargin*2
 	private val totalHeight: Float get() = itemHeight+innerMargin*2
-
+	
 	private var currentPosition: Int = 0
 	private var fingerDown = false
 	val currentItem get() = items?.get(currentPosition)
@@ -185,14 +177,7 @@ class InkSwitch: FrameLayout {
 						} else {
 							//Else get default colors
 							when (view?.id) {
-								R.id.inkswitch_background -> {
-									currentItem.let {
-										if(it!=null) {
-											if(it.selected) it.backgroundColorActive
-											else it.backgroundColorInactive
-										} else R.color.basic_yellow
-									}
-								}
+								R.id.inkswitch_background -> currentItem?.backgroundColor ?: R.color.inkswitch_background_default
 								R.id.inkswitch_clickable -> R.color.inkswitch_transparent
 								R.id.inkswitch_marker -> R.color.inkswitch_marker_default
 								else -> R.color.inkseekbar_default_default

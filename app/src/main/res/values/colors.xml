@@ -3,4 +3,21 @@
 	<color name="colorPrimary">#6200EE</color>
 	<color name="colorPrimaryDark">#3700B3</color>
 	<color name="colorAccent">#03DAC5</color>
+
+	<color name="basic_grey_light">#DDD</color>
+	<color name="basic_grey">#AAAAAA</color>
+	<color name="basic_red">#F00</color>
+	<color name="basic_red_dark">#A00</color>
+	<color name="basic_pink">#F0F</color>
+	<color name="basic_green">#0F0</color>
+	<color name="basic_green_dark">#060</color>
+	<color name="basic_cyan">#0FF</color>
+	<color name="basic_blue">#00F</color>
+	<color name="basic_yellow">#FF0</color>
+	<color name="basic_black">#000</color>
+	<color name="basic_white">#ffffff</color>
+	<color name="basic_orange">#FFA500</color>
+	<color name="transparent">#0000</color>
+	<color name="none">#0000</color>
+
 </resources>

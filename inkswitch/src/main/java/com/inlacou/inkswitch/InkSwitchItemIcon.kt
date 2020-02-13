@@ -1,14 +1,12 @@
 package com.inlacou.inkswitch
 
 class InkSwitchItemIcon(
-		backgroundColorActive: Int,
-		backgroundColorInactive: Int,
+		backgroundColor: Int,
 		textIconColorActive: Int,
 		textIconColorInactive: Int,
 		iconResId: Int
 ): InkSwitchItem(
-		backgroundColorActive = backgroundColorActive,
-		backgroundColorInactive = backgroundColorInactive,
+		backgroundColor = backgroundColor,
 		textIconColorActive = textIconColorActive,
 		textIconColorInactive = textIconColorInactive,
 		selected = false
