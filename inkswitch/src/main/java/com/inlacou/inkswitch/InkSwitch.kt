@@ -2,6 +2,9 @@ package com.inlacou.inkswitch
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -25,6 +28,10 @@ class InkSwitch: FrameLayout {
 	
 	private fun readAttrs(attrSet: AttributeSet) {
 		//TODO
+		setListeners()
+		update()
+		startUpdate()
+		updateBackground()
 	}
 	
 	init {
@@ -32,30 +39,20 @@ class InkSwitch: FrameLayout {
 		clickableView = rootView.findViewById(R.id.inkswitch_clickable)
 		backgroundView = rootView.findViewById(R.id.inkswitch_background)
 		markerView = rootView.findViewById(R.id.inkswitch_marker)
-		backgroundView?.let {
-			it.onDrawn(false) {
-				update()
-			}
-		}
-		setListeners()
-		update()
+		backgroundView?.let { it.onDrawn(false) { update() } }
 	}
 	
-	override fun setEnabled(enabled: Boolean) {
-		super.setEnabled(enabled)
-	}
-	
-	var innerMargin: Float = 20f
+	var innerMargin: Float = 15f
 		set(value) {
 			field = value
 			startUpdate()
 		}
-	var itemWidth = 80f
+	var itemWidth = 100f
 		set(value) {
 			field = value
 			startUpdate()
 		}
-	var itemHeight = 80f
+	var itemHeight = 100f
 		set(value) {
 			field = value
 			startUpdate()
@@ -63,22 +60,22 @@ class InkSwitch: FrameLayout {
 	val items: List<InkSwitchItem>? = listOf(
 			InkSwitchItemText(
 					text = "OFF",
-					textIconColorActive = context.getColorCompat(R.color.inkswitch_text_default_active),
-					textIconColorInactive = context.getColorCompat(R.color.inkswitch_text_default_inactive),
-					backgroundColorActive = context.getColorCompat(R.color.inkswitch_background_default_active),
-					backgroundColorInactive = context.getColorCompat(R.color.inkswitch_background_default_inactive)
+					textIconColorActive = (R.color.inkswitch_text_default_active),
+					textIconColorInactive = (R.color.basic_pink),
+					backgroundColorActive = (R.color.inkswitch_background_default_active),
+					backgroundColorInactive = (R.color.basic_cyan)
 			),InkSwitchItemText(
 					text = "ON",
-					textIconColorActive = context.getColorCompat(R.color.inkswitch_text_default_active),
-					textIconColorInactive = context.getColorCompat(R.color.inkswitch_text_default_inactive),
-					backgroundColorActive = context.getColorCompat(R.color.inkswitch_background_default_active),
-					backgroundColorInactive = context.getColorCompat(R.color.inkswitch_background_default_inactive)
+					textIconColorActive = (R.color.basic_red),
+					textIconColorInactive = (R.color.basic_red),
+					backgroundColorActive = (R.color.basic_red),
+					backgroundColorInactive = (R.color.basic_red)
 			),InkSwitchItemText(
 					text = "WTF",
-					textIconColorActive = context.getColorCompat(R.color.inkswitch_text_default_active),
-					textIconColorInactive = context.getColorCompat(R.color.inkswitch_text_default_inactive),
-					backgroundColorActive = context.getColorCompat(R.color.inkswitch_background_default_active),
-					backgroundColorInactive = context.getColorCompat(R.color.inkswitch_background_default_inactive)
+					textIconColorActive = (R.color.inkswitch_text_default_active),
+					textIconColorInactive = (R.color.basic_pink),
+					backgroundColorActive = (R.color.inkswitch_background_default_active),
+					backgroundColorInactive = (R.color.basic_pink)
 			))
 	
 	private val totalWidth: Float get() = itemWidth*(items?.size ?: 0)+innerMargin*2
@@ -86,7 +83,13 @@ class InkSwitch: FrameLayout {
 
 	private var currentPosition: Int = 0
 	private var fingerDown = false
+	val currentItem get() = items?.get(currentPosition)
 	
+	var generalCornerRadii: List<Float>? = listOf(100f)
+	var markerCornerRadii: List<Float>? = null
+		get() { return field ?: generalCornerRadii }
+	var backgroundGradientOrientation: GradientDrawable.Orientation = GradientDrawable.Orientation.TOP_BOTTOM
+	var markerGradientOrientation: GradientDrawable.Orientation = GradientDrawable.Orientation.TOP_BOTTOM
 	
 	@SuppressLint("ClickableViewAccessibility")
 	private fun setListeners() {
@@ -100,12 +103,15 @@ class InkSwitch: FrameLayout {
 		clickableView?.setOnTouchListener { _, event ->
 			if(!isEnabled) return@setOnTouchListener false
 			val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = event.x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
+			var changed = false
 			if(currentPosition!=newPosition) {
 				//TODO fire listeners
+				changed = true
 				//onValueChangeListener?.invoke(primaryProgress, secondaryProgress)
 				//onValuePrimaryChangeListener?.invoke(primaryProgress, true)
 			}
 			currentPosition = newPosition
+			if(changed) updateBackground()
 			startUpdate()
 			
 			when(event.action){
@@ -147,6 +153,84 @@ class InkSwitch: FrameLayout {
 		}else{
 			disposable?.dispose() //We stop the animation in progress if a no-animation-update is requested
 			update()
+		}
+	}
+	
+	fun updateBackground() {
+		updateBackground(backgroundView, backgroundGradientOrientation, sanitizeColors(backgroundView, listOf()), generalCornerRadii ?: mutableListOf())
+		updateBackground(markerView, markerGradientOrientation, sanitizeColors(markerView, listOf()), markerCornerRadii ?: generalCornerRadii ?: mutableListOf())
+	}
+	
+	/**
+	 * Method to sanitize a colors list array to have the correct number of items.
+	 * @param colors Array to sanitize.
+	 * @param view View to get the current color from if possible.
+	 * @return colors list of 2 or more items. Always. So we can build a GrandientDrawable.
+	 */
+	private fun sanitizeColors(view: View?, colors: List<Int>): List<Int> {
+		println("sanitizeColors: ${view?.stringId} | currentItem ($currentPosition)")
+		return when {
+			colors.size>1  -> colors //We have 2 or more colors, we can create a GrandientDrawable
+			colors.size==1 ->
+				colors.toMutableList().apply { //Add one more color so we have two
+					add(colors.first())
+				}
+			else -> {
+				mutableListOf<Int>().apply {
+					view?.background.let { back ->
+						//Try to get color from background
+						if (back != null && back is ColorDrawable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+							add(back.color)
+							add(back.color)
+						} else {
+							//Else get default colors
+							when (view?.id) {
+								R.id.inkswitch_background -> {
+									currentItem.let {
+										if(it!=null) {
+											if(it.selected) it.backgroundColorActive
+											else it.backgroundColorInactive
+										} else R.color.basic_yellow
+									}
+								}
+								R.id.inkswitch_clickable -> R.color.inkswitch_transparent
+								R.id.inkswitch_marker -> R.color.inkswitch_marker_default
+								else -> R.color.inkseekbar_default_default
+							}.let {
+								add(context.resources.getColorCompat(it))
+								add(context.resources.getColorCompat(it))
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Changes the background of the view to a GradientDrawable with the given params.
+	 * @param colorList colors for the GradientDrawable (always, minimum of 2 items)
+	 * @param orientation GradientDrawable.Orientation
+	 * @param customCornerRadii GradientDrawable corner radii. 1, 4 or 8 items, else ignored.
+	 * @param view View to apply the background to
+	 */
+	private fun updateBackground(view: View?, orientation: GradientDrawable.Orientation, colorList: List<Int>, customCornerRadii: List<Float>) {
+		view?.apply {
+			this.setBackgroundCompat(GradientDrawable(orientation, colorList.toIntArray()).apply {
+				this.cornerRadii = when (customCornerRadii.size) {
+					1 -> floatArrayOf(
+							customCornerRadii[0], customCornerRadii[0], customCornerRadii[0], customCornerRadii[0],
+							customCornerRadii[0], customCornerRadii[0], customCornerRadii[0], customCornerRadii[0])
+					4 -> floatArrayOf(
+							customCornerRadii[0], customCornerRadii[0], customCornerRadii[1], customCornerRadii[1],
+							customCornerRadii[2], customCornerRadii[2], customCornerRadii[3], customCornerRadii[3])
+					8 -> floatArrayOf(
+							customCornerRadii[0], customCornerRadii[1], customCornerRadii[2], customCornerRadii[3],
+							customCornerRadii[4], customCornerRadii[5], customCornerRadii[6], customCornerRadii[7])
+					else -> floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+				}
+			})
+			requestLayout()
 		}
 	}
 	

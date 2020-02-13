@@ -7,17 +7,16 @@
 		android:id="@+id/inkswitch_clickable"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
+		android:background="@color/inkswitch_transparent"
 		/>
 	<View
 		android:id="@+id/inkswitch_background"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:background="@color/inkswitch_background_default_inactive"
 		/>
 	<View
 		android:id="@+id/inkswitch_marker"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:background="@color/inkswitch_marker_default"
 		/>
 </RelativeLayout>

@@ -5,4 +5,22 @@
 	<color name="inkswitch_background_default_active">#0F0</color>
 	<color name="inkswitch_text_default_inactive">#000</color>
 	<color name="inkswitch_text_default_active">#0F0</color>
+	<color name="inkswitch_transparent">#00F0</color>
+	<color name="inkseekbar_default_default">#AAA</color>
+
+	<color name="basic_grey_light">#DDD</color>
+	<color name="basic_grey">#AAAAAA</color>
+	<color name="basic_red">#F00</color>
+	<color name="basic_red_dark">#A00</color>
+	<color name="basic_pink">#F0F</color>
+	<color name="basic_green">#0F0</color>
+	<color name="basic_cyan">#0FF</color>
+	<color name="basic_blue">#00F</color>
+	<color name="basic_yellow">#FF0</color>
+	<color name="basic_black">#000</color>
+	<color name="basic_white">#ffffff</color>
+	<color name="basic_orange">#FFA500</color>
+	<color name="transparent">#0000</color>
+	<color name="none">#0000</color>
+
 </resources>

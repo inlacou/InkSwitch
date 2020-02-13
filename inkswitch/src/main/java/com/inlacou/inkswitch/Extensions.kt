@@ -111,6 +111,9 @@ fun Resources.getColorCompat(resId: Int): Int {
 	}
 }
 
+fun Int.colorToHex(): String = String.format("#%06X", 0xFFFFFF and this)
+val View.stringId: String get() = if (id == View.NO_ID) "no-id" else resources.getResourceName(id)
+
 fun getItemPositionFromClickOnViewWithMargins(clickX: Float, itemWidth: Float, itemNumber: Int, margin: Float): Int {
 	val totalWidth = (itemNumber*itemWidth)+margin*2
 	var fixedRelativePosition = clickX-margin //Fix touch

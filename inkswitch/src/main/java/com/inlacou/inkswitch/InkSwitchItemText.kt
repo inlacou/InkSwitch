@@ -7,8 +7,9 @@ class InkSwitchItemText(
 		textIconColorInactive: Int,
 		text: String
 ): InkSwitchItem(
-		backgroundColorActive,
-		backgroundColorInactive,
-		textIconColorActive,
-		textIconColorInactive
+		backgroundColorActive = backgroundColorActive,
+		backgroundColorInactive = backgroundColorInactive,
+		textIconColorActive = textIconColorActive,
+		textIconColorInactive = textIconColorInactive,
+		selected = false
 )
