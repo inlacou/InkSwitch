@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<View
+		android:id="@+id/inkswitch_clickable"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		/>
+	<View
+		android:id="@+id/inkswitch_background"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:background="@color/inkswitch_background_default_inactive"
+		/>
+	<View
+		android:id="@+id/inkswitch_marker"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:background="@color/inkswitch_marker_default"
+		/>
+</RelativeLayout>

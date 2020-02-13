@@ -1,0 +1,3 @@
+rootProject.name='InkSwitchLibraryProject'
+include ':app'
+include ':inkswitch'
