@@ -5,16 +5,17 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	tools:context=".SecondFragment">
-
 	<com.inlacou.inkswitch.InkSwitch
 		android:id="@+id/inkswitch"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		app:itemWidth="100dp"
+		app:itemHeight="100dp"
+		app:editModeItemNumber="3"
 		app:layout_constraintBottom_toTopOf="@id/button_second"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
-
 	<Button
 		android:id="@+id/button_second"
 		android:layout_width="wrap_content"

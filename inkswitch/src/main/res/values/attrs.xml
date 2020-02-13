@@ -1,63 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-       Copyright (C) 2015 Haruki Hasegawa
-       Licensed under the Apache License, Version 2.0 (the "License");
-       you may not use this file except in compliance with the License.
-       You may obtain a copy of the License at
-           http://www.apache.org/licenses/LICENSE-2.0
-       Unless required by applicable law or agreed to in writing, software
-       distributed under the License is distributed on an "AS IS" BASIS,
-       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-       See the License for the specific language governing permissions and
-       limitations under the License.
--->
 <resources>
-	<declare-styleable name="InkSeekbar">
-		<attr name="backgroundColor" format="color|reference"/>
-		<attr name="primaryColor" format="color|reference"/>
-		<attr name="secondaryColor" format="color|reference"/>
-		<attr name="markerIcon" format="reference"/>
-		<attr name="markerColor" format="color|reference"/>
+	<declare-styleable name="InkSwitch">
 		<attr name="corners" format="dimension|reference"/>
 		<attr name="backgroundCorners" format="dimension|reference"/>
-		<attr name="primaryCorners" format="dimension|reference"/>
-		<attr name="secondaryCorners" format="dimension|reference"/>
 		<attr name="markerCorners" format="dimension|reference"/>
+
+		<attr name="backgroundColor" format="color|reference"/>
+		<attr name="markerColor" format="color|reference"/>
 		<attr name="backgroundColors" format="reference"/>
-		<attr name="primaryColors" format="reference"/>
-		<attr name="secondaryColors" format="reference"/>
 		<attr name="markerColors" format="reference"/>
 
-		<attr name="clickableMode" format="enum">
-			<enum name="LINE" value="0"/>
-			<enum name="MARKER" value="1"/>
-			<enum name="MAX_MARKER_OR_LINE" value="2"/>
-			<enum name="ALL" value="3"/>
-		</attr>
+		<attr name="editModeItemNumber" format="integer"/>
 
 		<attr name="backgroundGradientOrientation" format="enum">
-			<enum name="TOP_BOTTOM" value="0"/>
-			<enum name="TR_BL" value="1"/>
-			<enum name="RIGHT_LEFT" value="2"/>
-			<enum name="BR_TL" value="3"/>
-			<enum name="BOTTOM_TOP" value="4"/>
-			<enum name="BL_TR" value="5"/>
-			<enum name="LEFT_RIGHT" value="6"/>
-			<enum name="TL_BR" value="7"/>
-		</attr>
-
-		<attr name="primaryGradientOrientation" format="enum">
-			<enum name="TOP_BOTTOM" value="0"/>
-			<enum name="TR_BL" value="1"/>
-			<enum name="RIGHT_LEFT" value="2"/>
-			<enum name="BR_TL" value="3"/>
-			<enum name="BOTTOM_TOP" value="4"/>
-			<enum name="BL_TR" value="5"/>
-			<enum name="LEFT_RIGHT" value="6"/>
-			<enum name="TL_BR" value="7"/>
-		</attr>
-
-		<attr name="secondaryGradientOrientation" format="enum">
 			<enum name="TOP_BOTTOM" value="0"/>
 			<enum name="TR_BL" value="1"/>
 			<enum name="RIGHT_LEFT" value="2"/>
@@ -84,19 +39,8 @@
 			<enum name="SEEKBAR" value="1"/>
 		</attr>
 
-		<attr name="lineWidth" format="dimension|reference"/>
-		<attr name="markerWidth" format="dimension|reference"/>
-		<attr name="markerHeight" format="dimension|reference"/>
-		<attr name="primaryMargin" format="dimension|reference"/>
-		<attr name="secondaryMargin" format="dimension|reference"/>
-		<attr name="primaryProgress" format="integer"/>
-		<attr name="secondaryProgress" format="integer"/>
-		<attr name="maxProgress" format="integer"/>
-		<attr name="orientation">
-			<enum name="TOP_DOWN" value="0" />
-			<enum name="DOWN_TOP" value="1" />
-			<enum name="LEFT_RIGHT" value="2" />
-			<enum name="RIGHT_LEFT" value="3" />
-		</attr>
+		<attr name="itemWidth" format="dimension|reference"/>
+		<attr name="itemHeight" format="dimension|reference"/>
+		<attr name="innerMargin" format="dimension|reference"/>
 	</declare-styleable>
 </resources>

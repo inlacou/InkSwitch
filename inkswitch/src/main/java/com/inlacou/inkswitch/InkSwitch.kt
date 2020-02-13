@@ -51,7 +51,7 @@ class InkSwitch: FrameLayout {
 			heavyUpdate()
 		}
 	
-	private val totalWidth: Float get() = itemWidth*(items?.size ?: 0)+innerMargin*2
+	private val totalWidth: Float get() = (if(isInEditMode) editModeItemNumber else (items?.size ?: 0))*itemWidth+innerMargin*2
 	private val totalHeight: Float get() = itemHeight+innerMargin*2
 	
 	private var currentPosition: Int = 0
@@ -73,8 +73,19 @@ class InkSwitch: FrameLayout {
 	 */
 	var onValueSetListener: ((primary: Int, fromUser: Boolean) -> Unit)? = null
 	
-	private fun readAttrs(attrSet: AttributeSet) {
-		//TODO
+	private var editModeItemNumber = 2
+	
+	private fun readAttrs(attrs: AttributeSet) {
+		val ta = context.obtainStyledAttributes(attrs, R.styleable.InkSwitch, 0, 0)
+		if (ta.hasValue(R.styleable.InkSwitch_itemWidth)) {
+			itemWidth = ta.getDimension(R.styleable.InkSwitch_itemWidth, itemWidth)
+		}
+		if (ta.hasValue(R.styleable.InkSwitch_itemHeight)) {
+			itemHeight = ta.getDimension(R.styleable.InkSwitch_itemHeight, itemHeight)
+		}
+		if (ta.hasValue(R.styleable.InkSwitch_editModeItemNumber)) {
+			editModeItemNumber = ta.getInt(R.styleable.InkSwitch_editModeItemNumber, editModeItemNumber)
+		}
 		setListeners()
 		lightUpdate()
 	}

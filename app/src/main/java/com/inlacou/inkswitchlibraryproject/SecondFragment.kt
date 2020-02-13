@@ -27,8 +27,6 @@ class SecondFragment : Fragment() {
 	
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		inkswitch?.itemWidth = 200f
-		inkswitch?.itemHeight = 200f
 		inkswitch?.items = listOf(
 				InkSwitchItemIcon(
 						iconResId = R.drawable.space_invader,
