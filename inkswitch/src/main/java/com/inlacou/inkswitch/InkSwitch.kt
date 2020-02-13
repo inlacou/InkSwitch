@@ -59,6 +59,8 @@ class InkSwitch: FrameLayout {
 	val currentItem get() = items?.get(currentPosition)
 	
 	var generalCornerRadii: List<Float>? = listOf(10000f)
+	var backgroundCornerRadii: List<Float>? = null
+		get() { return field ?: generalCornerRadii }
 	var markerCornerRadii: List<Float>? = null
 		get() { return field ?: generalCornerRadii }
 	var backgroundGradientOrientation: GradientDrawable.Orientation = GradientDrawable.Orientation.TOP_BOTTOM
@@ -85,6 +87,27 @@ class InkSwitch: FrameLayout {
 		}
 		if (ta.hasValue(R.styleable.InkSwitch_editModeItemNumber)) {
 			editModeItemNumber = ta.getInt(R.styleable.InkSwitch_editModeItemNumber, editModeItemNumber)
+		}
+		if (ta.hasValue(R.styleable.InkSwitch_innerMargin)) {
+			innerMargin = ta.getDimension(R.styleable.InkSwitch_innerMargin, innerMargin)
+		}
+		if (ta.hasValue(R.styleable.InkSwitch_corners)) {
+			val aux = ta.getDimension(R.styleable.InkSwitch_corners, -10f)
+			if(aux!=-10f) {
+				generalCornerRadii = listOf(aux)
+			}
+		}
+		if (ta.hasValue(R.styleable.InkSwitch_backgroundCorners)) {
+			val aux = ta.getDimension(R.styleable.InkSwitch_backgroundCorners, -10f)
+			if(aux!=-10f) {
+				backgroundCornerRadii = listOf(aux)
+			}
+		}
+		if (ta.hasValue(R.styleable.InkSwitch_markerCorners)) {
+			val aux = ta.getDimension(R.styleable.InkSwitch_markerCorners, -10f)
+			if(aux!=-10f) {
+				markerCornerRadii = listOf(aux)
+			}
 		}
 		setListeners()
 		lightUpdate()
@@ -221,8 +244,8 @@ class InkSwitch: FrameLayout {
 	}
 	
 	fun updateBackground() {
-		updateBackground(backgroundView, backgroundGradientOrientation, sanitizeColors(backgroundView, listOf()), generalCornerRadii ?: mutableListOf())
-		updateBackground(markerView, markerGradientOrientation, sanitizeColors(markerView, listOf()), markerCornerRadii ?: generalCornerRadii ?: mutableListOf())
+		updateBackground(backgroundView, backgroundGradientOrientation, sanitizeColors(backgroundView, listOf()), backgroundCornerRadii ?: mutableListOf())
+		updateBackground(markerView, markerGradientOrientation, sanitizeColors(markerView, listOf()), markerCornerRadii ?: mutableListOf())
 	}
 	
 	/**

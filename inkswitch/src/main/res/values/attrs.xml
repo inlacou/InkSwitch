@@ -4,13 +4,15 @@
 		<attr name="corners" format="dimension|reference"/>
 		<attr name="backgroundCorners" format="dimension|reference"/>
 		<attr name="markerCorners" format="dimension|reference"/>
+		<attr name="editModeItemNumber" format="integer"/>
+		<attr name="itemWidth" format="dimension|reference"/>
+		<attr name="itemHeight" format="dimension|reference"/>
+		<attr name="innerMargin" format="dimension|reference"/>
 
 		<attr name="backgroundColor" format="color|reference"/>
 		<attr name="markerColor" format="color|reference"/>
 		<attr name="backgroundColors" format="reference"/>
 		<attr name="markerColors" format="reference"/>
-
-		<attr name="editModeItemNumber" format="integer"/>
 
 		<attr name="backgroundGradientOrientation" format="enum">
 			<enum name="TOP_BOTTOM" value="0"/>
@@ -34,13 +36,5 @@
 			<enum name="TL_BR" value="7"/>
 		</attr>
 
-		<attr name="mode" format="enum">
-			<enum name="PROGRESS" value="0"/>
-			<enum name="SEEKBAR" value="1"/>
-		</attr>
-
-		<attr name="itemWidth" format="dimension|reference"/>
-		<attr name="itemHeight" format="dimension|reference"/>
-		<attr name="innerMargin" format="dimension|reference"/>
 	</declare-styleable>
 </resources>
