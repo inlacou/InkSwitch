@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.inlacou.inkswitch.InkSwitchItemIcon
 import com.inlacou.inkswitch.InkSwitchItemText
@@ -48,6 +49,10 @@ class SecondFragment : Fragment() {
 						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
 						backgroundColor = resources.getColorCompat(R.color.basic_green)
 				))
+		
+		inkswitch.onValueSetListener = { index, fromUser ->
+			Toast.makeText(context!!, index.toString(), Toast.LENGTH_LONG).show()
+		}
 		
 		view.findViewById<Button>(R.id.button_second).setOnClickListener {
 			findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)

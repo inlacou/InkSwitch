@@ -30,6 +30,15 @@ class InkSwitch: FrameLayout {
 	private var markerView: View? = null
 	private var displays: LinearLayout? = null
 	
+	/**
+	 * Fired on any value change by user touch movement or set programmatically
+	 */
+	var onValueChangeListener: ((primary: Int, fromUser: Boolean) -> Unit)? = null
+	/**
+	 * Fired when user releases touch or when progress is set programmatically
+	 */
+	var onValueSetListener: ((primary: Int, fromUser: Boolean) -> Unit)? = null
+	
 	private fun readAttrs(attrSet: AttributeSet) {
 		//TODO
 		setListeners()
@@ -89,6 +98,29 @@ class InkSwitch: FrameLayout {
 	var backgroundGradientOrientation: GradientDrawable.Orientation = GradientDrawable.Orientation.TOP_BOTTOM
 	var markerGradientOrientation: GradientDrawable.Orientation = GradientDrawable.Orientation.TOP_BOTTOM
 	
+	fun setItemByIndex(index: Int, fromUser: Boolean) {
+		val changed = index!=currentPosition
+		currentPosition = index
+		if(changed) {
+			onValueSetListener?.invoke(index, fromUser)
+			onValueChangeListener?.invoke(index, fromUser)
+			updateBackground()
+			startUpdate()
+		}
+	}
+	
+	fun setItem(item: InkSwitchItem, fromUser: Boolean) {
+		val index = items?.indexOf(item) ?: throw ItemNotFoundException()
+		val changed = index!=currentPosition
+		currentPosition = index
+		if(changed) {
+			onValueSetListener?.invoke(index, fromUser)
+			onValueChangeListener?.invoke(index, fromUser)
+			updateBackground()
+			startUpdate()
+		}
+	}
+	
 	@SuppressLint("ClickableViewAccessibility")
 	private fun setListeners() {
 		listener = ViewTreeObserver.OnGlobalLayoutListener {
@@ -103,10 +135,8 @@ class InkSwitch: FrameLayout {
 			val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = event.x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
 			var changed = false
 			if(currentPosition!=newPosition) {
-				//TODO fire listeners
 				changed = true
-				//onValueChangeListener?.invoke(primaryProgress, secondaryProgress)
-				//onValuePrimaryChangeListener?.invoke(primaryProgress, true)
+				onValueChangeListener?.invoke(newPosition, true)
 			}
 			currentPosition = newPosition
 			if(changed) updateBackground()
@@ -120,8 +150,7 @@ class InkSwitch: FrameLayout {
 				}
 				MotionEvent.ACTION_CANCEL -> false
 				MotionEvent.ACTION_UP -> {
-					//TODO fire listeners
-					//onValuePrimarySetListener?.invoke(primaryProgress, true)
+					onValueSetListener?.invoke(currentPosition, true)
 					fingerDown = false
 					false
 				}
