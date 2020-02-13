@@ -1,13 +1,17 @@
 package com.inlacou.inkswitch
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.core.view.get
+import androidx.core.widget.ImageViewCompat
 
 internal fun View.onDrawn(continuous: Boolean = false, callback: () -> Unit) {
 	viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -99,11 +103,11 @@ internal fun View.alignParentRight() {
 	}
 }
 
-fun Context.getColorCompat(resId: Int): Int {
+internal fun Context.getColorCompat(resId: Int): Int {
 	return resources.getColorCompat(resId)
 }
 
-fun Resources.getColorCompat(resId: Int): Int {
+internal fun Resources.getColorCompat(resId: Int): Int {
 	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 		getColor(resId, null)
 	}else{
@@ -111,8 +115,30 @@ fun Resources.getColorCompat(resId: Int): Int {
 	}
 }
 
-fun Int.colorToHex(): String = String.format("#%06X", 0xFFFFFF and this)
-val View.stringId: String get() = if (id == View.NO_ID) "no-id" else resources.getResourceName(id)
+internal fun Context.getDrawableCompat(resId: Int): Drawable {
+	return resources.getDrawableCompat(resId)
+}
+
+internal fun Resources.getDrawableCompat(resId: Int): Drawable {
+	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+		getDrawable(resId, null)
+	}else{
+		getDrawable(resId)
+	}
+}
+
+internal fun Int.colorToHex(): String = String.format("#%06X", 0xFFFFFF and this)
+internal val View.stringId: String get() = if (id == View.NO_ID) "no-id" else resources.getResourceName(id)
+
+internal val ViewGroup.childViews get() = (0 until childCount).map { get(it) }
+
+internal fun ImageView.tintByResId(colorResId: Int){
+	ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(this.context.getColorCompat(colorResId)))
+}
+
+internal fun ImageView.tintByColor(color: Int){
+	ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(color))
+}
 
 fun getItemPositionFromClickOnViewWithMargins(clickX: Float, itemWidth: Float, itemNumber: Int, margin: Float): Int {
 	val totalWidth = (itemNumber*itemWidth)+margin*2

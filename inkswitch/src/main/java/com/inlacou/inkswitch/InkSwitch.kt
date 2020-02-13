@@ -3,14 +3,17 @@ package com.inlacou.inkswitch
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import io.reactivex.disposables.Disposable
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -25,13 +28,12 @@ class InkSwitch: FrameLayout {
 	private var clickableView: View? = null
 	private var backgroundView: View? = null
 	private var markerView: View? = null
+	private var displays: LinearLayout? = null
 	
 	private fun readAttrs(attrSet: AttributeSet) {
 		//TODO
 		setListeners()
-		update()
-		startUpdate()
-		updateBackground()
+		lightUpdate()
 	}
 	
 	init {
@@ -39,7 +41,18 @@ class InkSwitch: FrameLayout {
 		clickableView = rootView.findViewById(R.id.inkswitch_clickable)
 		backgroundView = rootView.findViewById(R.id.inkswitch_background)
 		markerView = rootView.findViewById(R.id.inkswitch_marker)
-		backgroundView?.let { it.onDrawn(false) { update() } }
+		displays = rootView.findViewById(R.id.inkswitch_displays)
+		backgroundView?.let { it.onDrawn(false) { lightUpdate() } }
+		clickableView?.centerVertical()
+		backgroundView?.centerVertical()
+		markerView?.centerVertical()
+		markerView?.alignParentLeft()
+	}
+	
+	override fun onAttachedToWindow() {
+		super.onAttachedToWindow()
+		startUpdate()
+		updateBackground()
 	}
 	
 	var innerMargin: Float = 15f
@@ -57,18 +70,11 @@ class InkSwitch: FrameLayout {
 			field = value
 			startUpdate()
 		}
-	var items: List<InkSwitchItem>? = listOf(
-			InkSwitchItemText(
-					text = "OFF",
-					textIconColorActive = (R.color.inkswitch_text_default_active),
-					textIconColorInactive = (R.color.inkswitch_text_default_inactive),
-					backgroundColor = (R.color.inkswitch_background_default)
-			),InkSwitchItemText(
-			text = "ON",
-			textIconColorActive = (R.color.inkswitch_text_default_active),
-			textIconColorInactive = (R.color.inkswitch_text_default_inactive),
-			backgroundColor = (R.color.inkswitch_background_default)
-	))
+	var items: List<InkSwitchItem>? = null
+		set(value) {
+			field = value
+			heavyUpdate()
+		}
 	
 	private val totalWidth: Float get() = itemWidth*(items?.size ?: 0)+innerMargin*2
 	private val totalHeight: Float get() = itemHeight+innerMargin*2
@@ -86,7 +92,7 @@ class InkSwitch: FrameLayout {
 	@SuppressLint("ClickableViewAccessibility")
 	private fun setListeners() {
 		listener = ViewTreeObserver.OnGlobalLayoutListener {
-			update()
+			lightUpdate()
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 				viewTreeObserver?.removeOnGlobalLayoutListener(listener)
 			}
@@ -125,11 +131,35 @@ class InkSwitch: FrameLayout {
 		}
 	}
 	
-	private fun update() {
-		clickableView?.centerVertical()
-		backgroundView?.centerVertical()
-		markerView?.centerVertical()
-		markerView?.alignParentLeft()
+	private fun heavyUpdate() {
+		displays?.removeAllViews()
+		items?.mapNotNull {
+			when (it) {
+				is InkSwitchItemText -> TextView(context).apply { text = it.text; gravity = Gravity.CENTER }
+				is InkSwitchItemIcon -> ImageView(context).apply { setImageDrawable(context.getDrawableCompat(it.iconResId)) }
+				else -> null
+			}
+		}?.forEach {
+			it.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+			it.layoutParams?.width = itemWidth.toInt()
+			it.layoutParams?.height = itemHeight.toInt()
+			displays?.addView(it)
+		}
+	}
+	
+	private fun lightUpdate() {
+		displays?.childViews?.forEachIndexed { index, view ->
+			val item = items?.get(index)
+			if(view is TextView) {
+				if(item!=null) view.setTextColor(if(index==currentPosition) item.textIconColorActive else item.textIconColorInactive)
+			} else if(view is ImageView) {
+				if(item!=null) view.tintByColor(if(index==currentPosition) item.textIconColorActive else item.textIconColorInactive)
+			}
+			view.requestLayout()
+		}
+		displays?.setPadding(innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt())
+		displays?.layoutParams?.width  = totalWidth.roundToInt()
+		displays?.layoutParams?.height = totalHeight.roundToInt()
 		markerView?.layoutParams?.width = itemWidth.roundToInt()
 		markerView?.layoutParams?.height = itemHeight.roundToInt()
 		clickableView?.layoutParams?.width  = totalWidth.roundToInt()
@@ -144,7 +174,7 @@ class InkSwitch: FrameLayout {
 			//tryUpdateAnimated(durationPrimary, durationSecondary, primaryDelay, secondaryDelay)
 		}else{
 			disposable?.dispose() //We stop the animation in progress if a no-animation-update is requested
-			update()
+			lightUpdate()
 		}
 	}
 	
@@ -177,13 +207,13 @@ class InkSwitch: FrameLayout {
 						} else {
 							//Else get default colors
 							when (view?.id) {
-								R.id.inkswitch_background -> currentItem?.backgroundColor ?: R.color.inkswitch_background_default
-								R.id.inkswitch_clickable -> R.color.inkswitch_transparent
-								R.id.inkswitch_marker -> R.color.inkswitch_marker_default
-								else -> R.color.inkseekbar_default_default
+								R.id.inkswitch_background -> currentItem?.backgroundColor ?: context.resources.getColorCompat(R.color.inkswitch_background_default)
+								R.id.inkswitch_clickable -> context.resources.getColorCompat(R.color.inkswitch_transparent)
+								R.id.inkswitch_marker -> context.resources.getColorCompat(R.color.inkswitch_marker_default)
+								else -> context.resources.getColorCompat(R.color.inkseekbar_default_default)
 							}.let {
-								add(context.resources.getColorCompat(it))
-								add(context.resources.getColorCompat(it))
+								add(it)
+								add(it)
 							}
 						}
 					}

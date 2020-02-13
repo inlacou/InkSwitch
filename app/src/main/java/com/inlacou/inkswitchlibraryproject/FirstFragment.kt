@@ -1,5 +1,7 @@
 package com.inlacou.inkswitchlibraryproject
 
+import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -29,25 +31,33 @@ class FirstFragment : Fragment() {
 		inkswitch?.items = listOf(
 				InkSwitchItemText(
 						text = "OFF",
-						textIconColorActive = (R.color.inkswitch_text_default_active),
-						textIconColorInactive = (R.color.basic_pink),
-						backgroundColor = (R.color.basic_black)
+						textIconColorActive = resources.getColorCompat(R.color.basic_black),
+						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
+						backgroundColor = resources.getColorCompat(R.color.basic_black)
 				),
 				InkSwitchItemText(
 						text = "ON",
-						textIconColorActive = (R.color.basic_red),
-						textIconColorInactive = (R.color.basic_red),
-						backgroundColor = (R.color.basic_green_dark)
+						textIconColorActive = resources.getColorCompat(R.color.basic_black),
+						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
+						backgroundColor = resources.getColorCompat(R.color.basic_green_dark)
 				),
 				InkSwitchItemText(
 						text = "WTF",
-						textIconColorActive = (R.color.inkswitch_text_default_active),
-						textIconColorInactive = (R.color.basic_pink),
-						backgroundColor = (R.color.basic_green)
+						textIconColorActive = resources.getColorCompat(R.color.basic_black),
+						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
+						backgroundColor = resources.getColorCompat(R.color.basic_green)
 				))
 		
 		view.findViewById<Button>(R.id.button_first).setOnClickListener {
 			findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
 		}
+	}
+}
+
+internal fun Resources.getColorCompat(resId: Int): Int {
+	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+		getColor(resId, null)
+	}else{
+		getColor(resId)
 	}
 }

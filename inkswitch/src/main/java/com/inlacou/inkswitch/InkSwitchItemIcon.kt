@@ -4,7 +4,7 @@ class InkSwitchItemIcon(
 		backgroundColor: Int,
 		textIconColorActive: Int,
 		textIconColorInactive: Int,
-		iconResId: Int
+		val iconResId: Int
 ): InkSwitchItem(
 		backgroundColor = backgroundColor,
 		textIconColorActive = textIconColorActive,

@@ -4,7 +4,7 @@ class InkSwitchItemText(
 		backgroundColor: Int,
 		textIconColorActive: Int,
 		textIconColorInactive: Int,
-		text: String
+		val text: String
 ): InkSwitchItem(
 		backgroundColor = backgroundColor,
 		textIconColorActive = textIconColorActive,
