@@ -1,6 +1,6 @@
-package com.inlacou.animations.easetypes
+package com.inlacou.inkswitch.animations.easetypes
 
-import com.inlacou.animations.CubicBezier
+import com.inlacou.inkswitch.animations.CubicBezier
 
 /**
  * Created by Weiping on 2016/3/3.

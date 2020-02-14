@@ -33,6 +33,8 @@ internal fun View.setMargins(left: Int? = null, top: Int? = null, right: Int? = 
 	}
 }
 
+internal val now get() = System.currentTimeMillis()
+
 internal fun View.setBackgroundCompat(drawable: Drawable){
 	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 		this.background = drawable

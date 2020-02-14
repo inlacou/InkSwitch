@@ -1,6 +1,7 @@
-package com.inlacou.animations
+package com.inlacou.inkswitch.animations
 
 import android.graphics.PointF
+import com.inlacou.inkswitch.animations.Interpolable
 import kotlin.math.abs
 
 /**

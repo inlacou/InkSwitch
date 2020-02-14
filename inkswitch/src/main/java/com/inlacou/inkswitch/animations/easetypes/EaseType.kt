@@ -1,6 +1,6 @@
-package com.inlacou.animations.easetypes
+package com.inlacou.inkswitch.animations.easetypes
 
-import com.inlacou.animations.Interpolable
+import com.inlacou.inkswitch.animations.Interpolable
 
 /**
  * Created by Weiping on 03/03/2016.
@@ -14,49 +14,49 @@ enum class EaseType
  * @param easingType
  */
 constructor(private val easingType: Class<out Interpolable>) {
-	None(NoEase::class.java),
+	None(com.inlacou.inkswitch.animations.easetypes.NoEase::class.java),
 
-	EaseInSine(com.inlacou.animations.easetypes.EaseInSine::class.java),
-	EaseOutSine(com.inlacou.animations.easetypes.EaseOutSine::class.java),
-	EaseInOutSine(com.inlacou.animations.easetypes.EaseInOutSine::class.java),
+	EaseInSine(com.inlacou.inkswitch.animations.easetypes.EaseInSine::class.java),
+	EaseOutSine(com.inlacou.inkswitch.animations.easetypes.EaseOutSine::class.java),
+	EaseInOutSine(com.inlacou.inkswitch.animations.easetypes.EaseInOutSine::class.java),
 
-	EaseInQuad(com.inlacou.animations.easetypes.EaseInQuad::class.java),
-	EaseOutQuad(com.inlacou.animations.easetypes.EaseOutQuad::class.java),
-	EaseInOutQuad(com.inlacou.animations.easetypes.EaseInOutQuad::class.java),
+	EaseInQuad(com.inlacou.inkswitch.animations.easetypes.EaseInQuad::class.java),
+	EaseOutQuad(com.inlacou.inkswitch.animations.easetypes.EaseOutQuad::class.java),
+	EaseInOutQuad(com.inlacou.inkswitch.animations.easetypes.EaseInOutQuad::class.java),
 
-	EaseInCubic(com.inlacou.animations.easetypes.EaseInCubic::class.java),
-	EaseOutCubic(com.inlacou.animations.easetypes.EaseOutCubic::class.java),
-	EaseInOutCubic(com.inlacou.animations.easetypes.EaseInOutCubic::class.java),
+	EaseInCubic(com.inlacou.inkswitch.animations.easetypes.EaseInCubic::class.java),
+	EaseOutCubic(com.inlacou.inkswitch.animations.easetypes.EaseOutCubic::class.java),
+	EaseInOutCubic(com.inlacou.inkswitch.animations.easetypes.EaseInOutCubic::class.java),
 
-	EaseInQuart(com.inlacou.animations.easetypes.EaseInQuart::class.java),
-	EaseOutQuart(com.inlacou.animations.easetypes.EaseOutQuart::class.java),
-	EaseInOutQuart(com.inlacou.animations.easetypes.EaseInOutQuart::class.java),
+	EaseInQuart(com.inlacou.inkswitch.animations.easetypes.EaseInQuart::class.java),
+	EaseOutQuart(com.inlacou.inkswitch.animations.easetypes.EaseOutQuart::class.java),
+	EaseInOutQuart(com.inlacou.inkswitch.animations.easetypes.EaseInOutQuart::class.java),
 
-	EaseInQuint(com.inlacou.animations.easetypes.EaseInQuint::class.java),
-	EaseOutQuint(com.inlacou.animations.easetypes.EaseOutQuint::class.java),
-	EaseInOutQuint(com.inlacou.animations.easetypes.EaseInOutQuint::class.java),
+	EaseInQuint(com.inlacou.inkswitch.animations.easetypes.EaseInQuint::class.java),
+	EaseOutQuint(com.inlacou.inkswitch.animations.easetypes.EaseOutQuint::class.java),
+	EaseInOutQuint(com.inlacou.inkswitch.animations.easetypes.EaseInOutQuint::class.java),
 
-	EaseInExpo(com.inlacou.animations.easetypes.EaseInExpo::class.java),
-	EaseOutExpo(com.inlacou.animations.easetypes.EaseOutExpo::class.java),
-	EaseInOutExpo(com.inlacou.animations.easetypes.EaseInOutExpo::class.java),
+	EaseInExpo(com.inlacou.inkswitch.animations.easetypes.EaseInExpo::class.java),
+	EaseOutExpo(com.inlacou.inkswitch.animations.easetypes.EaseOutExpo::class.java),
+	EaseInOutExpo(com.inlacou.inkswitch.animations.easetypes.EaseInOutExpo::class.java),
 
-	EaseInCirc(com.inlacou.animations.easetypes.EaseInCirc::class.java),
-	EaseOutCirc(com.inlacou.animations.easetypes.EaseOutCirc::class.java),
-	EaseInOutCirc(com.inlacou.animations.easetypes.EaseInOutCirc::class.java),
+	EaseInCirc(com.inlacou.inkswitch.animations.easetypes.EaseInCirc::class.java),
+	EaseOutCirc(com.inlacou.inkswitch.animations.easetypes.EaseOutCirc::class.java),
+	EaseInOutCirc(com.inlacou.inkswitch.animations.easetypes.EaseInOutCirc::class.java),
 
-	EaseInBack(com.inlacou.animations.easetypes.EaseInBack::class.java),
-	EaseOutBack(com.inlacou.animations.easetypes.EaseOutBack::class.java),
-	EaseInOutBack(com.inlacou.animations.easetypes.EaseInOutBack::class.java),
+	EaseInBack(com.inlacou.inkswitch.animations.easetypes.EaseInBack::class.java),
+	EaseOutBack(com.inlacou.inkswitch.animations.easetypes.EaseOutBack::class.java),
+	EaseInOutBack(com.inlacou.inkswitch.animations.easetypes.EaseInOutBack::class.java),
 
-	EaseInElastic(com.inlacou.animations.easetypes.EaseInElastic::class.java),
-	EaseOutElastic(com.inlacou.animations.easetypes.EaseOutElastic::class.java),
-	EaseInOutElastic(com.inlacou.animations.easetypes.EaseInOutElastic::class.java),
+	EaseInElastic(com.inlacou.inkswitch.animations.easetypes.EaseInElastic::class.java),
+	EaseOutElastic(com.inlacou.inkswitch.animations.easetypes.EaseOutElastic::class.java),
+	EaseInOutElastic(com.inlacou.inkswitch.animations.easetypes.EaseInOutElastic::class.java),
 
-	EaseInBounce(com.inlacou.animations.easetypes.EaseInBounce::class.java),
-	EaseOutBounce(com.inlacou.animations.easetypes.EaseOutBounce::class.java),
-	EaseInOutBounce(com.inlacou.animations.easetypes.EaseInOutBounce::class.java),
+	EaseInBounce(com.inlacou.inkswitch.animations.easetypes.EaseInBounce::class.java),
+	EaseOutBounce(com.inlacou.inkswitch.animations.easetypes.EaseOutBounce::class.java),
+	EaseInOutBounce(com.inlacou.inkswitch.animations.easetypes.EaseInOutBounce::class.java),
 
-	Linear(com.inlacou.animations.easetypes.Linear::class.java);
+	Linear(com.inlacou.inkswitch.animations.easetypes.Linear::class.java);
 	
 	fun newInstance() = easingType.newInstance()
 }

@@ -1,4 +1,4 @@
-package com.inlacou.animations
+package com.inlacou.inkswitch.animations
 
 interface Interpolable {
 	/**
