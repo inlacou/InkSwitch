@@ -8,8 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
-import com.inlacou.inkswitch.InkSwitchItemIcon
-import com.inlacou.inkswitch.InkSwitchItemText
+import com.inlacou.inkswitch.data.InkSwitchItemIcon
 import kotlinx.android.synthetic.main.fragment_first.*
 
 /**

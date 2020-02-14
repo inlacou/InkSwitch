@@ -1,5 +1,6 @@
 package com.inlacou.inkswitch
 
+import com.inlacou.inkswitch.utils.getItemPositionFromClickOnViewWithMargins
 import org.junit.Test
 
 import org.junit.Assert.*

@@ -1,4 +1,4 @@
-package com.inlacou.inkswitch
+package com.inlacou.inkswitch.utils
 
 import android.content.Context
 import android.content.res.ColorStateList

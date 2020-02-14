@@ -1,15 +1,16 @@
-package com.inlacou.inkswitch
+package com.inlacou.inkswitch.data
 
-class InkSwitchItemText(
+import com.inlacou.inkswitch.data.InkSwitchItem
+
+class InkSwitchItemIcon(
 		backgroundColor: Int? = null,
 		textIconColorActive: Int? = null,
 		textIconColorInactive: Int? = null,
 		padding: Int? = null,
-		val text: String
+		val iconResId: Int
 ): InkSwitchItem(
 		backgroundColor = backgroundColor,
 		textIconColorActive = textIconColorActive,
 		textIconColorInactive = textIconColorInactive,
 		padding = padding ?: 0
 )
-//TODO other text attributes

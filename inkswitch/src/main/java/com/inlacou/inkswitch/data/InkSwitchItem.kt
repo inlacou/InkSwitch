@@ -1,4 +1,4 @@
-package com.inlacou.inkswitch
+package com.inlacou.inkswitch.data
 
 abstract class InkSwitchItem(
 		val backgroundColor: Int?,
