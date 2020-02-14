@@ -1,3 +1,3 @@
-package com.inlacou.inkswitch
+package com.inlacou.inkswitch.exceptions
 
 class ItemNotFoundException: Exception()

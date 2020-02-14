@@ -14,6 +14,14 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.inlacou.inkswitch.data.InkSwitchItem
+import com.inlacou.inkswitch.data.InkSwitchItemIcon
+import com.inlacou.inkswitch.data.InkSwitchItemText
+import com.inlacou.inkswitch.exceptions.ItemNotFoundException
+import com.inlacou.inkswitch.utils.*
+import com.inlacou.inkswitch.utils.onDrawn
+import com.inlacou.inkswitch.utils.setBackgroundCompat
+import com.inlacou.inkswitch.utils.setMargins
 import io.reactivex.disposables.Disposable
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -239,7 +247,8 @@ class InkSwitch: FrameLayout {
 		viewTreeObserver?.addOnGlobalLayoutListener(listener)
 		clickableView?.setOnTouchListener { _, event ->
 			if(!isEnabled) return@setOnTouchListener false
-			val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = event.x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
+			val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = event.x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size
+					?: 0)
 			var changed = false
 			if(currentPosition!=newPosition) {
 				changed = true

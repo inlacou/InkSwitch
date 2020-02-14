@@ -1,7 +1,5 @@
 package com.inlacou.inkswitchlibraryproject
 
-import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
-import com.inlacou.inkswitch.InkSwitchItemText
+import com.inlacou.inkswitch.data.InkSwitchItemText
 import kotlinx.android.synthetic.main.fragment_first.*
 
 /**
