@@ -32,14 +32,14 @@ class FirstFragment : Fragment() {
 						text = "OFF",
 						padding = 10,
 						textIconColorActive = resources.getColorCompat(R.color.basic_black),
-						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
+						textIconColorInactive = resources.getColorCompat(R.color.basic_green_dark),
 						backgroundColor = resources.getColorCompat(R.color.basic_black)
 				),
 				InkSwitchItemText(
 						text = "ON",
 						padding = 10,
-						textIconColorActive = resources.getColorCompat(R.color.basic_black),
-						textIconColorInactive = resources.getColorCompat(R.color.basic_white),
+						textIconColorActive = resources.getColorCompat(R.color.basic_green_dark),
+						textIconColorInactive = resources.getColorCompat(R.color.basic_black),
 						backgroundColor = resources.getColorCompat(R.color.basic_green_dark)
 				))
 		

@@ -61,6 +61,15 @@ internal fun View.centerVertical(){
 	}
 }
 
+internal fun View.center(){
+	layoutParams?.let { layoutParams ->
+		if(layoutParams is RelativeLayout.LayoutParams){
+			layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL)
+			layoutParams.addRule(RelativeLayout.CENTER_VERTICAL)
+		}
+	}
+}
+
 internal fun View.alignParentTop() {
 	layoutParams?.let { layoutParams ->
 		if(layoutParams is RelativeLayout.LayoutParams){
@@ -96,11 +105,20 @@ internal fun View.alignParentLeft() {
 
 internal fun View.alignParentRight() {
 	layoutParams?.let { layoutParams ->
-		if(layoutParams is RelativeLayout.LayoutParams){
+		if(layoutParams is RelativeLayout.LayoutParams) {
 			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
 			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0)
 			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
 			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
+		}
+	}
+}
+
+internal fun View.matchParent() {
+	layoutParams?.let { layoutParams ->
+		if(layoutParams is RelativeLayout.LayoutParams) {
+			layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+			layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
 		}
 	}
 }
@@ -148,4 +166,25 @@ fun getItemPositionFromClickOnViewWithMargins(clickX: Float, itemWidth: Float, i
 	if(fixedRelativePosition<=(0+margin)) fixedRelativePosition = 0f //if less than minimum, minimum
 	if(fixedRelativePosition>=(totalWidth-margin*2)) fixedRelativePosition = totalWidth-(margin*2)-1 //if more than max, max
 	return (fixedRelativePosition/itemWidth).toInt()
+}
+
+fun View?.setVisible(visible: Boolean, holdSpaceOnDisappear: Boolean = false, animate: Boolean = false) {
+	if (this == null) return
+	if(animate){
+		if(visible) {
+			if(visible && visibility== View.VISIBLE) return
+		} else {
+			if(!visible && visibility!= View.VISIBLE) return
+		}
+	} else {
+		if(visible){
+			this.visibility = View.VISIBLE
+		}else{
+			if(holdSpaceOnDisappear){
+				this.visibility = View.INVISIBLE
+			}else{
+				this.visibility = View.GONE
+			}
+		}
+	}
 }

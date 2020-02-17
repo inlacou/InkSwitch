@@ -44,6 +44,8 @@ class InkSwitch: FrameLayout {
 	private var clickableView: View? = null
 	private var backgroundView: View? = null
 	private var markerView: View? = null
+	private var markerItemTextView: TextView? = null
+	private var markerItemIconView: ImageView? = null
 	private var displays: LinearLayout? = null
 	private var touchDownTimestamp = 0L
 	
@@ -64,7 +66,7 @@ class InkSwitch: FrameLayout {
 	 */
 	var baseTextIconColorInactive: Int = context.getColorCompat(R.color.inkswitch_text_default_inactive)
 	
-	var animate: Boolean = true
+	var animateOnClick: Boolean = true
 	var clickThreshold = DEFAULT_CLICK_THRESHOLD
 	var animationDuration = DEFAULT_ANIMATION_DURATION
 	private var animating = false
@@ -85,6 +87,11 @@ class InkSwitch: FrameLayout {
 			startUpdate()
 		}
 	var items: List<InkSwitchItem>? = null
+		set(value) {
+			field = value
+			heavyUpdate()
+		}
+	var markerItem: List<InkSwitchItem>? = null
 		set(value) {
 			field = value
 			heavyUpdate()
@@ -232,12 +239,16 @@ class InkSwitch: FrameLayout {
 		clickableView = rootView.findViewById(R.id.inkswitch_clickable)
 		backgroundView = rootView.findViewById(R.id.inkswitch_background)
 		markerView = rootView.findViewById(R.id.inkswitch_marker)
+		markerItemTextView = rootView.findViewById(R.id.inkswitch_marker_item_text)
+		markerItemIconView = rootView.findViewById(R.id.inkswitch_marker_item_icon)
 		displays = rootView.findViewById(R.id.inkswitch_displays)
 		backgroundView?.let { it.onDrawn(false) { lightUpdate() } }
 		clickableView?.centerVertical()
 		backgroundView?.centerVertical()
 		markerView?.centerVertical()
 		markerView?.alignParentLeft()
+		markerItemTextView?.matchParent()
+		markerItemIconView?.matchParent()
 	}
 	
 	override fun onAttachedToWindow() {
@@ -282,7 +293,7 @@ class InkSwitch: FrameLayout {
 			var changed = false
 			var click = false
 			val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = event.x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
-			if (animate && abs(touchDownTimestamp - System.currentTimeMillis()) < clickThreshold) {
+			if (animateOnClick && abs(touchDownTimestamp - System.currentTimeMillis()) < clickThreshold) {
 				click = true //this variable will make us call startUpdate(with animation) on touch release
 			}else{
 				if (currentPosition != newPosition) {
@@ -331,15 +342,26 @@ class InkSwitch: FrameLayout {
 		}
 	}
 	
-	private fun lightUpdate() {
+	private fun lightUpdate(animate: Boolean = false) {
 		displays?.childViews?.forEachIndexed { index, view ->
 			val item = items?.get(index)
 			if(item!=null) {
-				val color = if (index==currentPosition) (item.textIconColorActive  ?: baseTextIconColorActive) else (item.textIconColorInactive ?: baseTextIconColorInactive)
+				val color = (item.textIconColorInactive ?: baseTextIconColorInactive)
 				if (view is TextView) {
 					view.setTextColor(color)
 				} else if (view is ImageView) {
 					view.tintByColor(color)
+				}
+				view.setVisible(index!=currentPosition, holdSpaceOnDisappear = true)
+				if (index==currentPosition) {
+					markerItemTextView?.setTextColor(item.textIconColorActive  ?: baseTextIconColorActive)
+					markerItemIconView?.tintByColor(item.textIconColorActive  ?: baseTextIconColorActive)
+					if(item is InkSwitchItemIcon) {
+						markerItemIconView?.setImageDrawable(context.getDrawableCompat(item.iconResId))
+					} else if(item is InkSwitchItemText) {
+						markerItemTextView?.text = item.text
+					}
+					view.setPadding(item.padding, item.padding, item.padding, item.padding)
 				}
 				view.setPadding(item.padding, item.padding, item.padding, item.padding)
 			}
@@ -353,8 +375,12 @@ class InkSwitch: FrameLayout {
 		clickableView?.layoutParams?.height = max(itemHeight.roundToInt(), height)
 		backgroundView?.layoutParams?.width  = totalWidth.roundToInt()
 		backgroundView?.layoutParams?.height = totalHeight.roundToInt()
+		markerItemTextView?.layoutParams?.width = itemWidth.roundToInt()
+		markerItemTextView?.layoutParams?.height = itemHeight.roundToInt()
+		markerItemIconView?.layoutParams?.width = itemWidth.roundToInt()
+		markerItemIconView?.layoutParams?.height = itemHeight.roundToInt()
 		println("lightUpdate: $progressVisual")
-		markerView?.setMargins(left = innerMargin.toInt()+(progressVisual).toInt(), right = innerMargin.toInt(), top = innerMargin.toInt(), bottom = innerMargin.toInt())
+		markerView?.setMargins(left = innerMargin.toInt()+(if(animate) progressVisual else progress).toInt(), right = innerMargin.toInt(), top = innerMargin.toInt(), bottom = innerMargin.toInt())
 	}
 	
 	private fun startUpdate(animate: Boolean = false, duration: Long = DEFAULT_ANIMATION_DURATION, delay: Long = 0) {
@@ -364,26 +390,35 @@ class InkSwitch: FrameLayout {
 		}else{
 			println("updateAnimated - nope")
 			disposable?.dispose() //We stop the animation in progress if a no-animation-update is requested
-			lightUpdate()
+			lightUpdate(animate = false)
 		}
 	}
 	
 	private fun makeUpdate() {
 		progressVisual = progress
-		lightUpdate()
+		updateBackground()
+		lightUpdate(true)
 	}
 	
 	private fun tryUpdateAnimated(duration: Long, delay: Long) {
 		try {
 			disposable?.dispose()
-			disposable = Observable.interval(10L, TimeUnit.MILLISECONDS).doOnDispose { animating = false }.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).map { it * 10L }.subscribe({
-				animating = true
-				if(it in delay .. (delay+duration)) {
-					progressVisual = previousProgress + (progress-previousProgress) * easeType.getOffset(((it-delay)/10L).toFloat() / (duration / 10L))
-					println("on disposable progressVisual: $progressVisual")
-				}else disposable?.dispose()
-				lightUpdate()
-			}, { animating = false },{},{ animating = false })
+			disposable = Observable.interval(10L, TimeUnit.MILLISECONDS)
+					.doOnDispose {
+						animating = false
+					}.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).map { it * 10L }.subscribe({
+						animating = true
+						if(it in delay .. (delay+duration)) {
+							progressVisual = previousProgress + (progress-previousProgress) * easeType.getOffset(((it-delay)/10L).toFloat() / (duration / 10L))
+							println("on disposable progressVisual: $progressVisual")
+						}else { disposable?.dispose() }
+						updateBackground()
+						lightUpdate(true)
+					}, {
+						animating = false
+					},{},{
+						animating = false
+					})
 		}catch (e: NoClassDefFoundError) {
 			Log.w("InkSwitch", "update animation failed, RX library not found. Fault back to non-animated updated")
 			makeUpdate()
@@ -470,7 +505,7 @@ class InkSwitch: FrameLayout {
 	}
 	
 	companion object {
-		const val DEFAULT_ANIMATION_DURATION = 2_000L
+		const val DEFAULT_ANIMATION_DURATION = 1_500L
 		const val DEFAULT_CLICK_THRESHOLD = 150L
 		val DEFAULT_EASE_TYPE = EaseType.EaseOutBounce.newInstance()
 	}
