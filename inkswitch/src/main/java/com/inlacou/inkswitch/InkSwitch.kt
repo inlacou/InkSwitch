@@ -69,6 +69,10 @@ class InkSwitch: FrameLayout {
 	var animateOnClick: Boolean = true
 	var clickThreshold = DEFAULT_CLICK_THRESHOLD
 	var animationDuration = DEFAULT_ANIMATION_DURATION
+	/**
+	 * Variable used to block new input when animating
+	 * //TODO allow input some configurable time before animation end. Or in other words, make this soft and not hard
+	 */
 	private var animating = false
 	
 	var innerMargin: Float = 15f
@@ -510,6 +514,10 @@ class InkSwitch: FrameLayout {
 		const val DEFAULT_ANIMATION_DURATION = 1_500L
 		const val DEFAULT_CLICK_THRESHOLD = 150L
 		val DEFAULT_EASE_TYPE = EaseType.EaseOutExpo.newInstance()
+	}
+	
+	enum class Behaviour { //TODO
+		ON_CLICK_MOVE_TO_NEXT, ON_CLICK_MOVE_TO_SELECTED_POSITION, SWIPE
 	}
 	
 }
