@@ -66,7 +66,7 @@ class InkSwitch: FrameLayout {
 	 */
 	var baseTextIconColorInactive: Int = context.getColorCompat(R.color.inkswitch_text_default_inactive)
 	
-	var animateOnClick: Boolean = true
+	var onClickBehaviour: OnClickBehaviour = OnClickBehaviour.OnClickMoveToNext(animate = false)
 	var clickThreshold = DEFAULT_CLICK_THRESHOLD
 	var animationDuration = DEFAULT_ANIMATION_DURATION
 	/**
@@ -296,17 +296,20 @@ class InkSwitch: FrameLayout {
 			if(event.action==MotionEvent.ACTION_DOWN) touchDownTimestamp = now
 			var changed = false
 			var click = false
-			val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = event.x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
-			if (animateOnClick && abs(touchDownTimestamp - System.currentTimeMillis()) < clickThreshold) {
+			if ((onClickBehaviour !is OnClickBehaviour.JustSwipe) && abs(touchDownTimestamp-System.currentTimeMillis())<clickThreshold) {
 				click = true //this variable will make us call startUpdate(with animation) on touch release
 			}else{
-				if (currentPosition != newPosition) {
+				val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = event.x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
+				if (currentPosition!=newPosition) {
 					changed = true
 					onValueChangeListener?.invoke(newPosition, true)
 				}
 				currentPosition = newPosition
 				if (changed) updateBackground()
 				startUpdate()
+				
+				//TODO on ACTION_DOWN no change should be made, I think. Only on ACTION_UP, ACTION_MOVE, or ACTION_DOWN after some time if none of the previous ones have fired
+				
 			}
 			when(event.action) {
 				MotionEvent.ACTION_DOWN -> {
@@ -317,8 +320,15 @@ class InkSwitch: FrameLayout {
 				MotionEvent.ACTION_CANCEL -> { false }
 				MotionEvent.ACTION_UP -> {
 					if(click) {
-						currentPosition = newPosition
-						startUpdate(animate = true, duration = animationDuration)
+						val newPosition = when {
+							onClickBehaviour is OnClickBehaviour.OnClickMoveToSelected -> getItemPositionFromClickOnViewWithMargins(clickX = event.x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
+							currentPosition<(items?.size ?: 0)-1 -> currentPosition+1
+							else -> 0
+						}
+						if(newPosition!=currentPosition){
+							currentPosition = newPosition
+							startUpdate(animate = onClickBehaviour.animate, duration = animationDuration)
+						}
 					}
 					if(changed) onValueSetListener?.invoke(currentPosition, true)
 					fingerDown = false
@@ -516,8 +526,10 @@ class InkSwitch: FrameLayout {
 		val DEFAULT_EASE_TYPE = EaseType.EaseOutExpo.newInstance()
 	}
 	
-	enum class Behaviour { //TODO
-		ON_CLICK_MOVE_TO_NEXT, ON_CLICK_MOVE_TO_SELECTED_POSITION, SWIPE
+	sealed class OnClickBehaviour(val animate: Boolean) {
+		class JustSwipe: OnClickBehaviour(false)
+		class OnClickMoveToNext(animate: Boolean = false): OnClickBehaviour(animate)
+		class OnClickMoveToSelected(animate: Boolean = false): OnClickBehaviour(animate)
 	}
 	
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.inlacou.inkswitch.InkSwitch
 import com.inlacou.inkswitch.data.InkSwitchItemText
 import kotlinx.android.synthetic.main.fragment_first.*
 
@@ -27,7 +28,7 @@ class FirstFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		
-		inkswitch?.animateOnClick = false
+		inkswitch?.onClickBehaviour = InkSwitch.OnClickBehaviour.JustSwipe()
 		inkswitch?.items = listOf(
 				InkSwitchItemText(
 						text = "OFF",
