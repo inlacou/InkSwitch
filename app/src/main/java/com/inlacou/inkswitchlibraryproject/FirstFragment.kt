@@ -32,15 +32,17 @@ class FirstFragment : Fragment() {
 						text = "OFF",
 						padding = 10,
 						textIconColorActive = resources.getColorCompat(R.color.basic_black),
-						textIconColorInactive = resources.getColorCompat(R.color.basic_green_dark),
-						backgroundColor = resources.getColorCompat(R.color.basic_black)
+						textIconColorInactive = resources.getColorCompat(R.color.basic_green),
+						backgroundColor = resources.getColorCompat(R.color.basic_black),
+						textSize = 8f, textStyle = InkSwitchItemText.TextStyle.ITALIC
 				),
 				InkSwitchItemText(
 						text = "ON",
 						padding = 10,
-						textIconColorActive = resources.getColorCompat(R.color.basic_green_dark),
+						textIconColorActive = resources.getColorCompat(R.color.basic_green),
 						textIconColorInactive = resources.getColorCompat(R.color.basic_black),
-						backgroundColor = resources.getColorCompat(R.color.basic_green_dark)
+						backgroundColor = resources.getColorCompat(R.color.basic_green),
+						textSize = 12f, textStyle = InkSwitchItemText.TextStyle.BOLD
 				))
 		
 		inkswitch.onValueChangeListener = { index, fromUser -> Toast.makeText(context!!, index.toString(), Toast.LENGTH_LONG).show() }

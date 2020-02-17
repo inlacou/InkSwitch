@@ -360,6 +360,8 @@ class InkSwitch: FrameLayout {
 						markerItemIconView?.setImageDrawable(context.getDrawableCompat(item.iconResId))
 					} else if(item is InkSwitchItemText) {
 						markerItemTextView?.text = item.text
+						item.textSize?.let { markerItemTextView?.textSize = it }
+						markerItemTextView?.let { it.setTypeface(it.typeface, item.textStyle.value) }
 					}
 					view.setPadding(item.padding, item.padding, item.padding, item.padding)
 				}
@@ -407,12 +409,12 @@ class InkSwitch: FrameLayout {
 					.doOnDispose {
 						animating = false
 					}.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).map { it * 10L }.subscribe({
+						if(animating==false) updateBackground()
 						animating = true
 						if(it in delay .. (delay+duration)) {
 							progressVisual = previousProgress + (progress-previousProgress) * easeType.getOffset(((it-delay)/10L).toFloat() / (duration / 10L))
 							println("on disposable progressVisual: $progressVisual")
 						}else { disposable?.dispose() }
-						updateBackground()
 						lightUpdate(true)
 					}, {
 						animating = false
@@ -507,9 +509,7 @@ class InkSwitch: FrameLayout {
 	companion object {
 		const val DEFAULT_ANIMATION_DURATION = 1_500L
 		const val DEFAULT_CLICK_THRESHOLD = 150L
-		val DEFAULT_EASE_TYPE = EaseType.EaseOutBounce.newInstance()
+		val DEFAULT_EASE_TYPE = EaseType.EaseOutExpo.newInstance()
 	}
-	
-	//TODO add possibility to set icon or text on the marker
 	
 }
