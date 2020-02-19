@@ -2,9 +2,12 @@ package com.inlacou.inkswitch
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Point
+import android.graphics.PointF
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
+import android.text.style.TtsSpan
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
@@ -112,7 +115,6 @@ class InkSwitch: FrameLayout {
 				field = value
 			}
 		}
-	private var fingerDown = false
 	val currentItem get() = items?.get(currentPosition)
 	
 	var generalCornerRadii: List<Float>? = listOf(10000f)
@@ -284,6 +286,8 @@ class InkSwitch: FrameLayout {
 		}
 	}
 	
+	var clickDisposable: Disposable? = null
+	
 	@SuppressLint("ClickableViewAccessibility")
 	private fun setListeners() {
 		listener = ViewTreeObserver.OnGlobalLayoutListener {
@@ -294,31 +298,31 @@ class InkSwitch: FrameLayout {
 		clickableView?.setOnTouchListener { _, event ->
 			if(!isEnabled || animating) return@setOnTouchListener false
 			if(event.action==MotionEvent.ACTION_DOWN) touchDownTimestamp = now
-			var changed = false
 			var click = false
 			if ((onClickBehaviour !is OnClickBehaviour.JustSwipe) && abs(touchDownTimestamp-System.currentTimeMillis())<clickThreshold) {
 				click = true //this variable will make us call startUpdate(with animation) on touch release
-			}else{
-				val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = event.x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
-				if (currentPosition!=newPosition) {
-					changed = true
-					onValueChangeListener?.invoke(newPosition, true)
-				}
-				currentPosition = newPosition
-				if (changed) updateBackground()
-				startUpdate()
-				
-				//TODO on ACTION_DOWN no change should be made, I think. Only on ACTION_UP, ACTION_MOVE, or ACTION_DOWN after some time if none of the previous ones have fired
-				
 			}
 			when(event.action) {
 				MotionEvent.ACTION_DOWN -> {
 					attemptClaimDrag()
-					fingerDown = true
+					clickDisposable = Observable
+							.timer(clickThreshold, TimeUnit.MILLISECONDS)
+							.subscribeOn(AndroidSchedulers.mainThread())
+							.doOnNext {
+								//Time passes on the same place, act as if it moved
+								println("clickDisposable")
+								actAsIfMoved(event.x, event.y)
+							}
+							.subscribe({},{})
 					true
 				}
-				MotionEvent.ACTION_CANCEL -> { false }
+				MotionEvent.ACTION_MOVE -> {
+					clickDisposable?.dispose()
+					actAsIfMoved(event.x, event.y)
+					true
+				}
 				MotionEvent.ACTION_UP -> {
+					clickDisposable?.dispose()
 					if(click) {
 						val newPosition = when {
 							onClickBehaviour is OnClickBehaviour.OnClickMoveToSelected -> getItemPositionFromClickOnViewWithMargins(clickX = event.x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
@@ -327,17 +331,29 @@ class InkSwitch: FrameLayout {
 						}
 						if(newPosition!=currentPosition){
 							currentPosition = newPosition
+							onValueSetListener?.invoke(currentPosition, true)
 							startUpdate(animate = onClickBehaviour.animate, duration = animationDuration)
 						}
+					}else{
+						actAsIfMoved(event.x, event.y)
 					}
-					if(changed) onValueSetListener?.invoke(currentPosition, true)
-					fingerDown = false
 					false
 				}
-				MotionEvent.ACTION_MOVE -> { true }
 				else -> false
 			}
 		}
+	}
+	
+	private fun actAsIfMoved(x: Float, y: Float) {
+		var changed = false
+		val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
+		if (currentPosition!=newPosition) {
+			changed = true
+			onValueChangeListener?.invoke(newPosition, true)
+		}
+		currentPosition = newPosition
+		if (changed) updateBackground()
+		startUpdate()
 	}
 	
 	private fun heavyUpdate() {

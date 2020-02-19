@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.inlacou.inkswitch.InkSwitch
 import com.inlacou.inkswitch.data.InkSwitchItemIcon
 import kotlinx.android.synthetic.main.fragment_first.*
 
@@ -26,6 +27,8 @@ class SecondFragment : Fragment() {
 	
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		
+		inkswitch?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToSelected()
 		inkswitch?.items = listOf(
 				InkSwitchItemIcon(iconResId = R.drawable.space_invader),
 				InkSwitchItemIcon(iconResId = R.drawable.space_invader),
