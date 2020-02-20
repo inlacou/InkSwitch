@@ -74,9 +74,14 @@ class InkSwitch: FrameLayout {
 	var animationDuration = DEFAULT_ANIMATION_DURATION
 	/**
 	 * Variable used to block new input when animating
-	 * //TODO allow input some configurable time before animation end. Or in other words, make this soft and not hard
 	 */
-	private var animating = false
+	val animating get() = animationPercentage<animationPercentageRequired
+	/**
+	 * Percentage of the current animation required to be able to start a new animation
+	 */
+	var animationPercentageRequired = .2f
+	var animationPercentage = 1f
+		private set
 	
 	var innerMargin: Float = 15f
 		set(value) {
@@ -94,11 +99,6 @@ class InkSwitch: FrameLayout {
 			startUpdate()
 		}
 	var items: List<InkSwitchItem>? = null
-		set(value) {
-			field = value
-			heavyUpdate()
-		}
-	var markerItem: List<InkSwitchItem>? = null
 		set(value) {
 			field = value
 			heavyUpdate()
@@ -446,23 +446,25 @@ class InkSwitch: FrameLayout {
 	}
 	
 	private fun tryUpdateAnimated(duration: Long, delay: Long) {
+		println("InkSwitch | tryUpdateAnimated | animationPercentage: $animationPercentage/$animationPercentageRequired")
 		try {
 			disposable?.dispose()
 			disposable = Observable.interval(10L, TimeUnit.MILLISECONDS)
 					.doOnDispose {
-						animating = false
+						animationPercentage = 1f
 					}.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).map { it * 10L }.subscribe({
-						if(animating==false) updateBackground()
-						animating = true
+						if(!animating) updateBackground()
+						animationPercentage = it/(delay+duration).toFloat()
+						println("InkSwitch | animationPercentage: $animationPercentage/$animationPercentageRequired")
 						if(it in delay .. (delay+duration)) {
 							progressVisual = previousProgress + (progress-previousProgress) * easeType.getOffset(((it-delay)/10L).toFloat() / (duration / 10L))
 							println("InkSwitch | on disposable progressVisual: $progressVisual")
 						}else { disposable?.dispose() }
 						lightUpdate(true)
 					}, {
-						animating = false
+						animationPercentage = 1f
 					},{},{
-						animating = false
+						animationPercentage = 1f
 					})
 		}catch (e: NoClassDefFoundError) {
 			Log.w("InkSwitch", "update animation failed, RX library not found. Fault back to non-animated updated")
