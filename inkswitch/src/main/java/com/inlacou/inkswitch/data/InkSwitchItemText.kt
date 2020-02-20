@@ -20,4 +20,3 @@ class InkSwitchItemText(
 		BOLD(Typeface.BOLD), BOLD_ITALIC(Typeface.BOLD_ITALIC), ITALIC(Typeface.ITALIC), NORMAL(Typeface.NORMAL)
 	}
 }
-//TODO other text attributes
