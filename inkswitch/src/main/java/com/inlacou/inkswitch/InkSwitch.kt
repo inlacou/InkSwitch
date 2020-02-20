@@ -305,15 +305,18 @@ class InkSwitch: FrameLayout {
 			when(event.action) {
 				MotionEvent.ACTION_DOWN -> {
 					attemptClaimDrag()
+					val aux = Pair(event.x, event.y)
 					clickDisposable = Observable
 							.timer(clickThreshold, TimeUnit.MILLISECONDS)
-							.subscribeOn(AndroidSchedulers.mainThread())
+							.map { aux }
+							.observeOn(AndroidSchedulers.mainThread())
 							.doOnNext {
 								//Time passes on the same place, act as if it moved
-								println("clickDisposable")
-								actAsIfMoved(event.x, event.y)
+								actAsIfMoved(it.first, it.second)
 							}
-							.subscribe({},{})
+							.subscribe({},{
+								println("InkSwitch | error: $it")
+							})
 					true
 				}
 				MotionEvent.ACTION_MOVE -> {
@@ -332,9 +335,11 @@ class InkSwitch: FrameLayout {
 						if(newPosition!=currentPosition){
 							currentPosition = newPosition
 							onValueSetListener?.invoke(currentPosition, true)
+							updateBackground()
 							startUpdate(animate = onClickBehaviour.animate, duration = animationDuration)
 						}
 					}else{
+						println("InkSwitch | ACTION_UP | ${event.x}, ${event.y}")
 						actAsIfMoved(event.x, event.y)
 					}
 					false
@@ -347,12 +352,20 @@ class InkSwitch: FrameLayout {
 	private fun actAsIfMoved(x: Float, y: Float) {
 		var changed = false
 		val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
+		println("InkSwitch | current position: $currentPosition")
+		println("InkSwitch | new position:     $newPosition")
 		if (currentPosition!=newPosition) {
+			println("InkSwitch | a")
 			changed = true
+			println("InkSwitch | b")
 			onValueChangeListener?.invoke(newPosition, true)
+			println("InkSwitch | v")
 		}
+		println("InkSwitch | d")
 		currentPosition = newPosition
+		println("InkSwitch | e")
 		if (changed) updateBackground()
+		println("InkSwitch | f")
 		startUpdate()
 	}
 	
@@ -411,16 +424,16 @@ class InkSwitch: FrameLayout {
 		markerItemTextView?.layoutParams?.height = itemHeight.roundToInt()
 		markerItemIconView?.layoutParams?.width = itemWidth.roundToInt()
 		markerItemIconView?.layoutParams?.height = itemHeight.roundToInt()
-		println("lightUpdate: $progressVisual")
+		println("InkSwitch | lightUpdate: $progressVisual")
 		markerView?.setMargins(left = innerMargin.toInt()+(if(animate) progressVisual else progress).toInt(), right = innerMargin.toInt(), top = innerMargin.toInt(), bottom = innerMargin.toInt())
 	}
 	
 	private fun startUpdate(animate: Boolean = false, duration: Long = DEFAULT_ANIMATION_DURATION, delay: Long = 0) {
 		if(animate) {
-			println("updateAnimated")
+			println("InkSwitch | updateAnimated")
 			tryUpdateAnimated(duration, delay)
 		}else{
-			println("updateAnimated - nope")
+			println("InkSwitch | updateAnimated - nope")
 			disposable?.dispose() //We stop the animation in progress if a no-animation-update is requested
 			lightUpdate(animate = false)
 		}
@@ -443,7 +456,7 @@ class InkSwitch: FrameLayout {
 						animating = true
 						if(it in delay .. (delay+duration)) {
 							progressVisual = previousProgress + (progress-previousProgress) * easeType.getOffset(((it-delay)/10L).toFloat() / (duration / 10L))
-							println("on disposable progressVisual: $progressVisual")
+							println("InkSwitch | on disposable progressVisual: $progressVisual")
 						}else { disposable?.dispose() }
 						lightUpdate(true)
 					}, {
@@ -469,7 +482,7 @@ class InkSwitch: FrameLayout {
 	 * @return colors list of 2 or more items. Always. So we can build a GrandientDrawable.
 	 */
 	private fun sanitizeColors(view: View?, colors: List<Int>): List<Int> {
-		println("sanitizeColors: ${view?.stringId} | currentItem ($currentPosition)")
+		println("InkSwitch | sanitizeColors: ${view?.stringId} | currentItem ($currentPosition)")
 		return when {
 			colors.size>1  -> colors //We have 2 or more colors, we can create a GrandientDrawable
 			colors.size==1 ->
@@ -538,7 +551,7 @@ class InkSwitch: FrameLayout {
 	
 	companion object {
 		const val DEFAULT_ANIMATION_DURATION = 1_500L
-		const val DEFAULT_CLICK_THRESHOLD = 150L
+		const val DEFAULT_CLICK_THRESHOLD = 130L
 		val DEFAULT_EASE_TYPE = EaseType.EaseOutExpo.newInstance()
 	}
 	

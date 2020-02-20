@@ -28,7 +28,7 @@ class SecondFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		
-		inkswitch?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToSelected()
+		inkswitch?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToNext()
 		inkswitch?.items = listOf(
 				InkSwitchItemIcon(iconResId = R.drawable.space_invader),
 				InkSwitchItemIcon(iconResId = R.drawable.space_invader),
