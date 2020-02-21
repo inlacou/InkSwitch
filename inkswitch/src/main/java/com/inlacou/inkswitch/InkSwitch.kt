@@ -2,12 +2,9 @@ package com.inlacou.inkswitch
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Point
-import android.graphics.PointF
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
-import android.text.style.TtsSpan
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
@@ -42,6 +39,7 @@ class InkSwitch: FrameLayout {
 	constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet) { readAttrs(attrSet) }
 	constructor(context: Context, attrSet: AttributeSet, arg: Int) : super(context, attrSet, arg) { readAttrs(attrSet) }
 	
+	private var initialTouchPosition: Float? = null
 	private lateinit var listener: ViewTreeObserver.OnGlobalLayoutListener
 	private var disposable: Disposable? = null
 	private var clickableView: View? = null
@@ -55,19 +53,19 @@ class InkSwitch: FrameLayout {
 	/**
 	 * Color array, not color resource array
 	 */
-	val baseBackgroundColors: MutableList<Int> = mutableListOf(context.getColorCompat(R.color.inkswitch_background_default))
+	private val baseBackgroundColors: MutableList<Int> = mutableListOf(context.getColorCompat(R.color.inkswitch_background_default))
 	/**
 	 * Color array, not color resource array
 	 */
-	val baseMarkerColors: MutableList<Int> = mutableListOf(context.getColorCompat(R.color.inkswitch_marker_default))
+	private val baseMarkerColors: MutableList<Int> = mutableListOf(context.getColorCompat(R.color.inkswitch_marker_default))
 	/**
 	 * Color, not color resource
 	 */
-	var baseTextIconColorActive: Int = context.getColorCompat(R.color.inkswitch_text_default_active)
+	private var baseTextIconColorActive: Int = context.getColorCompat(R.color.inkswitch_text_default_active)
 	/**
 	 * Color, not color resource
 	 */
-	var baseTextIconColorInactive: Int = context.getColorCompat(R.color.inkswitch_text_default_inactive)
+	private var baseTextIconColorInactive: Int = context.getColorCompat(R.color.inkswitch_text_default_inactive)
 	
 	var onClickBehaviour: OnClickBehaviour = OnClickBehaviour.OnClickMoveToNext(animate = false)
 	var clickThreshold = DEFAULT_CLICK_THRESHOLD
@@ -75,7 +73,7 @@ class InkSwitch: FrameLayout {
 	/**
 	 * Variable used to block new input when animating
 	 */
-	val animating get() = animationPercentage<animationPercentageRequired
+	val isAnimating get() = animationPercentage<animationPercentageRequired
 	/**
 	 * Percentage of the current animation required to be able to start a new animation
 	 */
@@ -296,7 +294,7 @@ class InkSwitch: FrameLayout {
 		}
 		viewTreeObserver?.addOnGlobalLayoutListener(listener)
 		clickableView?.setOnTouchListener { _, event ->
-			if(!isEnabled || animating) return@setOnTouchListener false
+			if(!isEnabled || isAnimating) return@setOnTouchListener false
 			if(event.action==MotionEvent.ACTION_DOWN) touchDownTimestamp = now
 			var click = false
 			if ((onClickBehaviour !is OnClickBehaviour.JustSwipe) && abs(touchDownTimestamp-System.currentTimeMillis())<clickThreshold) {
@@ -304,27 +302,19 @@ class InkSwitch: FrameLayout {
 			}
 			when(event.action) {
 				MotionEvent.ACTION_DOWN -> {
+					println("InkSwitch | ACTION_DOWN")
 					attemptClaimDrag()
-					val aux = Pair(event.x, event.y)
-					clickDisposable = Observable
-							.timer(clickThreshold, TimeUnit.MILLISECONDS)
-							.map { aux }
-							.observeOn(AndroidSchedulers.mainThread())
-							.doOnNext {
-								//Time passes on the same place, act as if it moved
-								actAsIfMoved(it.first, it.second)
-							}
-							.subscribe({},{
-								println("InkSwitch | error: $it")
-							})
+					initialTouchPosition = event.x
 					true
 				}
 				MotionEvent.ACTION_MOVE -> {
+					println("InkSwitch | ACTION_MOVE")
 					clickDisposable?.dispose()
-					actAsIfMoved(event.x, event.y)
+					initialTouchPosition.let { if(it==null || abs(it-event.x)>30) actAsIfMoved(event.x) }
 					true
 				}
 				MotionEvent.ACTION_UP -> {
+					println("InkSwitch | ACTION_UP")
 					clickDisposable?.dispose()
 					if(click) {
 						val newPosition = when {
@@ -339,8 +329,8 @@ class InkSwitch: FrameLayout {
 							startUpdate(animate = onClickBehaviour.animate, duration = animationDuration)
 						}
 					}else{
-						println("InkSwitch | ACTION_UP | ${event.x}, ${event.y}")
-						actAsIfMoved(event.x, event.y)
+						println("InkSwitch | ACTION_UP | ${event.x}")
+						actAsIfMoved(event.x)
 					}
 					false
 				}
@@ -349,7 +339,7 @@ class InkSwitch: FrameLayout {
 		}
 	}
 	
-	private fun actAsIfMoved(x: Float, y: Float) {
+	private fun actAsIfMoved(x: Float) {
 		var changed = false
 		val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
 		println("InkSwitch | current position: $currentPosition")
@@ -453,7 +443,7 @@ class InkSwitch: FrameLayout {
 					.doOnDispose {
 						animationPercentage = 1f
 					}.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).map { it * 10L }.subscribe({
-						if(!animating) updateBackground()
+						if(!isAnimating) updateBackground()
 						animationPercentage = it/(delay+duration).toFloat()
 						println("InkSwitch | animationPercentage: $animationPercentage/$animationPercentageRequired")
 						if(it in delay .. (delay+duration)) {
@@ -553,7 +543,7 @@ class InkSwitch: FrameLayout {
 	
 	companion object {
 		const val DEFAULT_ANIMATION_DURATION = 1_500L
-		const val DEFAULT_CLICK_THRESHOLD = 130L
+		const val DEFAULT_CLICK_THRESHOLD = 150L
 		val DEFAULT_EASE_TYPE = EaseType.EaseOutExpo.newInstance()
 	}
 	

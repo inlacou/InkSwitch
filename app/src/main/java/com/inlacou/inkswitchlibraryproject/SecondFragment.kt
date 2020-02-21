@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.inlacou.inkswitch.InkSwitch
 import com.inlacou.inkswitch.data.InkSwitchItemIcon
+import com.inlacou.inkswitch.data.InkSwitchItemText
 import kotlinx.android.synthetic.main.fragment_first.*
 
 /**
@@ -28,14 +29,35 @@ class SecondFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		
-		inkswitch?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToNext(true)
-		inkswitch?.items = listOf(
+		inkswitch_example?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToNext(false)
+		inkswitch_example?.items = listOf(
 				InkSwitchItemIcon(iconResId = R.drawable.space_invader),
 				InkSwitchItemIcon(iconResId = R.drawable.space_invader),
 				InkSwitchItemIcon(iconResId = R.drawable.space_invader))
 		
-		inkswitch.onValueSetListener = { index, fromUser ->
+		inkswitch_example.onValueSetListener = { index, fromUser ->
 			Toast.makeText(context!!, index.toString(), Toast.LENGTH_LONG).show()
+		}
+		
+		inkswitch_animate?.items = listOf(
+				InkSwitchItemText(
+						text = "NO",
+						padding = 10,
+						textIconColorActive = resources.getColorCompat(R.color.basic_black),
+						textIconColorInactive = resources.getColorCompat(R.color.basic_green),
+						backgroundColor = resources.getColorCompat(R.color.basic_black),
+						textSize = 8f, textStyle = InkSwitchItemText.TextStyle.ITALIC
+				),
+				InkSwitchItemText(
+						text = "YES",
+						padding = 10,
+						textIconColorActive = resources.getColorCompat(R.color.basic_green),
+						textIconColorInactive = resources.getColorCompat(R.color.basic_black),
+						backgroundColor = resources.getColorCompat(R.color.basic_green),
+						textSize = 12f, textStyle = InkSwitchItemText.TextStyle.BOLD
+				))
+		inkswitch_animate?.onValueSetListener = { index, fromUser ->
+			inkswitch_example?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToNext(index==1)
 		}
 		
 		view.findViewById<Button>(R.id.button_second).setOnClickListener {
