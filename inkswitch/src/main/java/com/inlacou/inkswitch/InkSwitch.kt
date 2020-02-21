@@ -439,7 +439,7 @@ class InkSwitch: FrameLayout {
 		println("InkSwitch | tryUpdateAnimated | animationPercentage: $animationPercentage/$animationPercentageRequired")
 		try {
 			disposable?.dispose()
-			disposable = Observable.interval(10L, TimeUnit.MILLISECONDS)
+			disposable = Observable.interval(0,10L, TimeUnit.MILLISECONDS)
 					.doOnDispose {
 						animationPercentage = 1f
 					}.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).map { it * 10L }.subscribe({
