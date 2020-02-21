@@ -34,17 +34,17 @@ class FirstFragment : Fragment() {
 						text = "OFF",
 						padding = 10,
 						textIconColorActive = resources.getColorCompat(R.color.basic_black),
-						textIconColorInactive = resources.getColorCompat(R.color.basic_green),
+						textIconColorInactive = resources.getColorCompat(R.color.transparent),
 						backgroundColor = resources.getColorCompat(R.color.basic_black),
-						textSize = 8f, textStyle = InkSwitchItemText.TextStyle.ITALIC
+						textSize = 16f, textStyle = InkSwitchItemText.TextStyle.ITALIC
 				),
 				InkSwitchItemText(
 						text = "ON",
 						padding = 10,
 						textIconColorActive = resources.getColorCompat(R.color.basic_green),
-						textIconColorInactive = resources.getColorCompat(R.color.basic_black),
+						textIconColorInactive = resources.getColorCompat(R.color.transparent),
 						backgroundColor = resources.getColorCompat(R.color.basic_green),
-						textSize = 12f, textStyle = InkSwitchItemText.TextStyle.BOLD
+						textSize = 24f, textStyle = InkSwitchItemText.TextStyle.BOLD
 				))
 		inkswitch_animate?.items = listOf(
 				InkSwitchItemText(

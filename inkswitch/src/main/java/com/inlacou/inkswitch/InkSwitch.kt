@@ -2,6 +2,7 @@ package com.inlacou.inkswitch
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -29,6 +30,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.max
@@ -114,6 +116,7 @@ class InkSwitch: FrameLayout {
 			}
 		}
 	val currentItem get() = items?.get(currentPosition)
+	val previousItem get() = items?.get(previousPosition)
 	
 	var generalCornerRadii: List<Float>? = listOf(10000f)
 	var backgroundCornerRadii: List<Float>? = null
@@ -257,8 +260,8 @@ class InkSwitch: FrameLayout {
 	
 	override fun onAttachedToWindow() {
 		super.onAttachedToWindow()
+		updateBackground(false)
 		startUpdate()
-		updateBackground()
 	}
 	
 	fun setItemByIndex(index: Int, fromUser: Boolean) {
@@ -267,7 +270,6 @@ class InkSwitch: FrameLayout {
 		if(changed) {
 			onValueSetListener?.invoke(index, fromUser)
 			onValueChangeListener?.invoke(index, fromUser)
-			updateBackground()
 			startUpdate()
 		}
 	}
@@ -279,7 +281,6 @@ class InkSwitch: FrameLayout {
 		if(changed) {
 			onValueSetListener?.invoke(index, fromUser)
 			onValueChangeListener?.invoke(index, fromUser)
-			updateBackground()
 			startUpdate()
 		}
 	}
@@ -325,7 +326,6 @@ class InkSwitch: FrameLayout {
 						if(newPosition!=currentPosition){
 							currentPosition = newPosition
 							onValueSetListener?.invoke(currentPosition, true)
-							updateBackground()
 							startUpdate(animate = onClickBehaviour.animate, duration = animationDuration)
 						}
 					}else{
@@ -345,17 +345,10 @@ class InkSwitch: FrameLayout {
 		println("InkSwitch | current position: $currentPosition")
 		println("InkSwitch | new position:     $newPosition")
 		if (currentPosition!=newPosition) {
-			println("InkSwitch | a")
 			changed = true
-			println("InkSwitch | b")
 			onValueChangeListener?.invoke(newPosition, true)
-			println("InkSwitch | v")
 		}
-		println("InkSwitch | d")
 		currentPosition = newPosition
-		println("InkSwitch | e")
-		if (changed) updateBackground()
-		println("InkSwitch | f")
 		startUpdate()
 	}
 	
@@ -373,35 +366,6 @@ class InkSwitch: FrameLayout {
 			it.layoutParams?.height = itemHeight.toInt()
 			displays?.addView(it)
 		}
-	}
-	
-	private fun lightUpdate(animate: Boolean = false) {
-		displays?.childViews?.forEachIndexed { index, view ->
-			val item = items?.get(index)
-			if(item!=null) {
-				val color = (item.textIconColorInactive ?: baseTextIconColorInactive)
-				if (view is TextView) {
-					view.setTextColor(color)
-				} else if (view is ImageView) {
-					view.tintByColor(color)
-				}
-				view.setVisible(index!=currentPosition, holdSpaceOnDisappear = true)
-				if (index==currentPosition) {
-					markerItemTextView?.setTextColor(item.textIconColorActive  ?: baseTextIconColorActive)
-					markerItemIconView?.tintByColor(item.textIconColorActive  ?: baseTextIconColorActive)
-					if(item is InkSwitchItemIcon) {
-						markerItemIconView?.setImageDrawable(context.getDrawableCompat(item.iconResId))
-					} else if(item is InkSwitchItemText) {
-						markerItemTextView?.text = item.text
-						item.textSize?.let { markerItemTextView?.textSize = it }
-						markerItemTextView?.let { it.setTypeface(it.typeface, item.textStyle.value) }
-					}
-					view.setPadding(item.padding, item.padding, item.padding, item.padding)
-				}
-				view.setPadding(item.padding, item.padding, item.padding, item.padding)
-			}
-		}
-		displays?.setPadding(innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt())
 		displays?.layoutParams?.width  = totalWidth.roundToInt()
 		displays?.layoutParams?.height = totalHeight.roundToInt()
 		markerView?.layoutParams?.width = itemWidth.roundToInt()
@@ -414,24 +378,91 @@ class InkSwitch: FrameLayout {
 		markerItemTextView?.layoutParams?.height = itemHeight.roundToInt()
 		markerItemIconView?.layoutParams?.width = itemWidth.roundToInt()
 		markerItemIconView?.layoutParams?.height = itemHeight.roundToInt()
-		println("InkSwitch | lightUpdate: $progressVisual")
+	}
+	
+	private fun transitionUpdate() {
+		println("updates | transitionUpdate")
+		displays?.childViews?.forEachIndexed { index, view ->
+			val item = items?.get(index)
+			if(item!=null) {
+				val transparent = context.getColorCompat(R.color.inkswitch_transparent)
+				val newColor = if(index==currentPosition) (item.textIconColorActive ?: baseTextIconColorActive) else (item.textIconColorInactive ?: baseTextIconColorInactive)
+				if (view is TextView && view.textColors.defaultColor!=newColor) {
+					view.setTextColor(transparent)
+				} else if (view is ImageView && view.getTint()?.defaultColor!=newColor) {
+					println("solidColor: ${view.getTint()?.defaultColor}")
+					view.tintByColor(transparent)
+				}
+			}
+		}
+	}
+	
+	private fun lightUpdate(animate: Boolean = false) {
+		println("updates | lightUpdate")
+		displays?.setPadding(innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt())
+		updateDisplayContents(animate)
+		updateDisplayColors(animate)
+		updatePosition(animate)
+	}
+	
+	private fun updateDisplayContents(animate: Boolean) {
+		displays?.childViews?.forEachIndexed { index, view ->
+			val item = items?.get(index)
+			if(item!=null) {
+				view.setVisible(index!=currentPosition, holdSpaceOnDisappear = true)
+				if (index==currentPosition) {
+					if(item is InkSwitchItemIcon) {
+						markerItemIconView?.setImageDrawable(context.getDrawableCompat(item.iconResId))
+					} else if(item is InkSwitchItemText) {
+						markerItemTextView?.text = item.text
+						item.textSize?.let { markerItemTextView?.textSize = it }
+						markerItemTextView?.let { it.setTypeface(it.typeface, item.textStyle.value) }
+					}
+				}
+				view.setPadding(item.padding, item.padding, item.padding, item.padding)
+			}
+		}
+	}
+	
+	private fun updateDisplayColors(animate: Boolean) {
+		displays?.childViews?.forEachIndexed { index, view ->
+			val item = items?.get(index)
+			if(item!=null) {
+				view.setVisible(index!=currentPosition, holdSpaceOnDisappear = true)
+				if (index==currentPosition) {
+					previousItem?.backgroundColor?.mergeColors(currentItem?.backgroundColor, if(animate) animationPercentage else 1f)
+					markerItemTextView?.setTextColor(item.textIconColorActive  ?: baseTextIconColorActive)
+					markerItemIconView?.tintByColor(item.textIconColorActive  ?: baseTextIconColorActive)
+				}else{
+					if (view is TextView) {
+						view.setTextColor(item.textIconColorInactive ?: baseTextIconColorInactive)
+					} else if (view is ImageView) {
+						view.tintByColor(item.textIconColorInactive ?: baseTextIconColorInactive)
+					}
+				}
+			}
+		}
+	}
+	private fun updatePosition(animate: Boolean) {
 		markerView?.setMargins(left = innerMargin.toInt()+(if(animate) progressVisual else progress).toInt(), right = innerMargin.toInt(), top = innerMargin.toInt(), bottom = innerMargin.toInt())
 	}
 	
 	private fun startUpdate(animate: Boolean = false, duration: Long = DEFAULT_ANIMATION_DURATION, delay: Long = 0) {
 		if(animate) {
 			println("InkSwitch | updateAnimated")
+			transitionUpdate()
 			tryUpdateAnimated(duration, delay)
 		}else{
 			println("InkSwitch | updateAnimated - nope")
-			disposable?.dispose() //We stop the animation in progress if a no-animation-update is requested
+			try{ disposable?.dispose() } catch (e: Exception) {} //We stop the animation in progress if a no-animation-update is requested
+			updateBackground(animate = false)
 			lightUpdate(animate = false)
 		}
 	}
 	
 	private fun makeUpdate() {
 		progressVisual = progress
-		updateBackground()
+		updateBackground(true)
 		lightUpdate(true)
 	}
 	
@@ -443,14 +474,18 @@ class InkSwitch: FrameLayout {
 					.doOnDispose {
 						animationPercentage = 1f
 					}.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).map { it * 10L }.subscribe({
-						if(!isAnimating) updateBackground()
 						animationPercentage = it/(delay+duration).toFloat()
 						println("InkSwitch | animationPercentage: $animationPercentage/$animationPercentageRequired")
+						updateBackground(true)
+						if(it==0L) {
+							updateDisplayContents(true)
+							updateDisplayColors(true)
+						}
 						if(it in delay .. (delay+duration)) {
 							progressVisual = previousProgress + (progress-previousProgress) * easeType.getOffset(((it-delay)/10L).toFloat() / (duration / 10L))
 							println("InkSwitch | on disposable progressVisual: $progressVisual")
 						}else { disposable?.dispose() }
-						lightUpdate(true)
+						updatePosition(true)
 					}, {
 						animationPercentage = 1f
 					},{},{
@@ -462,27 +497,19 @@ class InkSwitch: FrameLayout {
 		}
 	}
 	
-	fun updateBackground() {
-		updateBackground(backgroundView, backgroundGradientOrientation, sanitizeColors(backgroundView, listOf()), backgroundCornerRadii ?: mutableListOf())
-		updateBackground(markerView, markerGradientOrientation, sanitizeColors(markerView, listOf()), markerCornerRadii ?: mutableListOf())
+	fun updateBackground(animate: Boolean) {
+		updateBackground(backgroundView, backgroundGradientOrientation, getBackgroundColor(backgroundView, animate), backgroundCornerRadii ?: mutableListOf())
+		updateBackground(markerView, markerGradientOrientation, getBackgroundColor(markerView, animate), markerCornerRadii ?: mutableListOf())
 	}
 	
 	/**
 	 * Method to sanitize a colors list array to have the correct number of items.
-	 * @param colors Array to sanitize.
 	 * @param view View to get the current color from if possible.
 	 * @return colors list of 2 or more items. Always. So we can build a GrandientDrawable.
 	 */
-	private fun sanitizeColors(view: View?, colors: List<Int>): List<Int> {
-		println("InkSwitch | sanitizeColors: ${view?.stringId} | currentItem ($currentPosition)")
-		return when {
-			colors.size>1  -> colors //We have 2 or more colors, we can create a GrandientDrawable
-			colors.size==1 ->
-				colors.toMutableList().apply { //Add one more color so we have two
-					add(colors.first())
-				}
-			else -> {
-				mutableListOf<Int>().apply {
+	private fun getBackgroundColor(view: View?, animate: Boolean): List<Int> {
+		println("InkSwitch | getBackgroundColor: ${view?.stringId} | currentItem ($currentPosition) | animationPercentage: $animationPercentage")
+		return mutableListOf<Int>().apply {
 					view?.background.let { back ->
 						//Try to get color from background
 						if (back != null && back is ColorDrawable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -491,7 +518,7 @@ class InkSwitch: FrameLayout {
 						} else {
 							//Else get default colors
 							when (view?.id) {
-								R.id.inkswitch_background -> currentItem?.backgroundColor ?: context.resources.getColorCompat(R.color.inkswitch_background_default)
+								R.id.inkswitch_background -> previousItem?.backgroundColor?.mergeColors(currentItem?.backgroundColor, if(animate && onClickBehaviour.animateBackgroundColorChange) animationPercentage else 1f) ?: context.resources.getColorCompat(R.color.inkswitch_background_default)
 								R.id.inkswitch_clickable -> context.resources.getColorCompat(R.color.inkswitch_transparent)
 								R.id.inkswitch_marker -> context.resources.getColorCompat(R.color.inkswitch_marker_default)
 								else -> context.resources.getColorCompat(R.color.inkseekbar_default_default)
@@ -501,8 +528,6 @@ class InkSwitch: FrameLayout {
 							}
 						}
 					}
-				}
-			}
 		}
 	}
 	
@@ -547,10 +572,10 @@ class InkSwitch: FrameLayout {
 		val DEFAULT_EASE_TYPE = EaseType.EaseOutExpo.newInstance()
 	}
 	
-	sealed class OnClickBehaviour(val animate: Boolean) {
-		class JustSwipe: OnClickBehaviour(false)
-		class OnClickMoveToNext(animate: Boolean = false): OnClickBehaviour(animate)
-		class OnClickMoveToSelected(animate: Boolean = false): OnClickBehaviour(animate)
+	sealed class OnClickBehaviour(val animate: Boolean, val animateBackgroundColorChange: Boolean) {
+		class JustSwipe: OnClickBehaviour(false, false)
+		class OnClickMoveToNext(animate: Boolean = false, animateBackgroundColorChange: Boolean = false): OnClickBehaviour(animate, animateBackgroundColorChange)
+		class OnClickMoveToSelected(animate: Boolean = false, animateBackgroundColorChange: Boolean = false): OnClickBehaviour(animate, animateBackgroundColorChange)
 	}
 	
 }
