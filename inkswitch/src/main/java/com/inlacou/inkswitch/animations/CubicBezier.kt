@@ -1,13 +1,14 @@
 package com.inlacou.inkswitch.animations
 
 import android.graphics.PointF
+import android.view.animation.Interpolator
 import com.inlacou.inkswitch.animations.Interpolable
 import kotlin.math.abs
 
 /**
  * Created by Weiping on 2016/3/3.
  */
-abstract class CubicBezier: Interpolable {
+abstract class CubicBezier: Interpolable, Interpolator {
 
 	private lateinit var start: PointF
 	private lateinit var end: PointF
@@ -30,7 +31,9 @@ abstract class CubicBezier: Interpolable {
 	fun init(startX: Double, startY: Double, endX: Double, endY: Double) {
 		init(startX.toFloat(), startY.toFloat(), endX.toFloat(), endY.toFloat())
 	}
-
+	
+	override fun getInterpolation(p0: Float): Float = getOffset(p0)
+	
 	override fun getOffset(offset: Float): Float {
 		return getBezierCoordinateY(getXForTime(offset))
 	}

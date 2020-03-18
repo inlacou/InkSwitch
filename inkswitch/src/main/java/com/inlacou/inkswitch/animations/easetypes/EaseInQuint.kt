@@ -5,10 +5,8 @@ import com.inlacou.inkswitch.animations.CubicBezier
 /**
  * Created by Weiping on 2016/3/3.
  */
-
-class NoEase : CubicBezier() {
+class EaseInQuint : CubicBezier() {
 	init {
-		init(0f, 0f, 1f, 1f)
+		init(0.755, 0.05, 0.855, 0.06)
 	}
-	override fun getOffset(offset: Float): Float = 1f
 }
