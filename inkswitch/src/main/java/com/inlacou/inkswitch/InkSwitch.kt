@@ -182,14 +182,14 @@ class InkSwitch: FrameLayout {
 					markerCornerRadii = listOf(aux)
 				}
 			}
-			if (ta.hasValue(R.styleable.InkSwitch_backgroundGradientOrientation)) {
-				ta.getInt(R.styleable.InkSwitch_backgroundGradientOrientation, -1).let {
+			if (ta.hasValue(R.styleable.InkSwitch_inkSwitchBackgroundGradientOrientation)) {
+				ta.getInt(R.styleable.InkSwitch_inkSwitchBackgroundGradientOrientation, -1).let {
 					backgroundGradientOrientation = if(it==-1) backgroundGradientOrientation
 					else GradientDrawable.Orientation.values()[it]
 				}
 			}
-			if (ta.hasValue(R.styleable.InkSwitch_markerGradientOrientation)) {
-				ta.getInt(R.styleable.InkSwitch_markerGradientOrientation, -1).let {
+			if (ta.hasValue(R.styleable.InkSwitch_inkSwitchMarkerGradientOrientation)) {
+				ta.getInt(R.styleable.InkSwitch_inkSwitchMarkerGradientOrientation, -1).let {
 					markerGradientOrientation = if(it==-1) markerGradientOrientation
 					else GradientDrawable.Orientation.values()[it]
 				}
