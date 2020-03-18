@@ -3,8 +3,10 @@ package com.inlacou.inkswitch.utils
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -12,6 +14,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.core.view.get
 import androidx.core.widget.ImageViewCompat
+import java.util.*
 
 internal fun View.onDrawn(continuous: Boolean = false, callback: () -> Unit) {
 	viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -32,6 +35,8 @@ internal fun View.setMargins(left: Int? = null, top: Int? = null, right: Int? = 
 		requestLayout()
 	}
 }
+
+internal val now get() = System.currentTimeMillis()
 
 internal fun View.setBackgroundCompat(drawable: Drawable){
 	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -54,6 +59,15 @@ internal fun View.centerVertical(){
 	layoutParams?.let { layoutParams ->
 		if(layoutParams is RelativeLayout.LayoutParams){
 			layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, 0)
+			layoutParams.addRule(RelativeLayout.CENTER_VERTICAL)
+		}
+	}
+}
+
+internal fun View.center(){
+	layoutParams?.let { layoutParams ->
+		if(layoutParams is RelativeLayout.LayoutParams){
+			layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL)
 			layoutParams.addRule(RelativeLayout.CENTER_VERTICAL)
 		}
 	}
@@ -94,11 +108,20 @@ internal fun View.alignParentLeft() {
 
 internal fun View.alignParentRight() {
 	layoutParams?.let { layoutParams ->
-		if(layoutParams is RelativeLayout.LayoutParams){
+		if(layoutParams is RelativeLayout.LayoutParams) {
 			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
 			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0)
 			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
 			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0)
+		}
+	}
+}
+
+internal fun View.matchParent() {
+	layoutParams?.let { layoutParams ->
+		if(layoutParams is RelativeLayout.LayoutParams) {
+			layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+			layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
 		}
 	}
 }
@@ -128,6 +151,52 @@ internal fun Resources.getDrawableCompat(resId: Int): Drawable {
 }
 
 internal fun Int.colorToHex(): String = String.format("#%06X", 0xFFFFFF and this)
+internal fun String.hexToDecimal() = Integer.parseInt(this, 16)
+
+internal fun Int.colorToRgb(): Triple<Int, Int, Int> {
+	var hex = colorToHex()
+	if(hex.contains("#")) hex = hex.replace("#", "")
+	if(hex.length>6) hex = hex.substring(2, hex.length)
+	return Triple(hex.substring(0, 2).hexToDecimal(), hex.substring(2, 4).hexToDecimal(), hex.substring(4, 6).hexToDecimal())
+}
+
+fun Int.decimalToHex(): String {
+	var result = toString(16)
+	if(result.length%2!=0) result = "0$result"
+	return result.toUpperCase(Locale.ROOT)
+}
+
+internal fun Triple<Int, Int, Int>.rgbToHex(): String {
+	return first.decimalToHex() + second.decimalToHex() + third.decimalToHex()
+}
+
+internal fun Triple<Int, Int, Int>.rgbToColor(): Int {
+	return rgbToHex().hexToColor()
+}
+
+internal fun String.hexToColor(): Int {
+	var aux = this
+	if(!aux.startsWith("#")) aux = "#$aux"
+	return Color.parseColor(aux)
+}
+
+internal fun Int.mergeColors(newColor: Int?, newColorPercentage: Float): Int {
+	val newPercentage = when {
+		newColorPercentage>1f -> 1f
+		newColorPercentage<0f -> 0f
+		else -> newColorPercentage
+	}
+	if(newColor==null) return this
+	val color1Triple = colorToRgb()
+	val color2Triple = newColor.colorToRgb()
+	val selfPercentage = 1f-newPercentage
+	val mergedRgb = Triple(((color1Triple.first*selfPercentage)+(color2Triple.first*newPercentage)).toInt(),
+			((color1Triple.second*selfPercentage)+(color2Triple.second*newPercentage)).toInt(),
+			((color1Triple.third*selfPercentage)+(color2Triple.third*newPercentage)).toInt())
+	
+	return mergedRgb.rgbToColor()
+}
+
 internal val View.stringId: String get() = if (id == View.NO_ID) "no-id" else resources.getResourceName(id)
 
 internal val ViewGroup.childViews get() = (0 until childCount).map { get(it) }
@@ -140,10 +209,33 @@ internal fun ImageView.tintByColor(color: Int){
 	ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(color))
 }
 
-fun getItemPositionFromClickOnViewWithMargins(clickX: Float, itemWidth: Float, itemNumber: Int, margin: Float): Int {
+internal fun ImageView.getTint() = ImageViewCompat.getImageTintList(this)
+
+internal fun getItemPositionFromClickOnViewWithMargins(clickX: Float, itemWidth: Float, itemNumber: Int, margin: Float): Int {
 	val totalWidth = (itemNumber*itemWidth)+margin*2
 	var fixedRelativePosition = clickX-margin //Fix touch
 	if(fixedRelativePosition<=(0+margin)) fixedRelativePosition = 0f //if less than minimum, minimum
 	if(fixedRelativePosition>=(totalWidth-margin*2)) fixedRelativePosition = totalWidth-(margin*2)-1 //if more than max, max
 	return (fixedRelativePosition/itemWidth).toInt()
+}
+
+internal fun View?.setVisible(visible: Boolean, holdSpaceOnDisappear: Boolean = false, animate: Boolean = false) {
+	if (this == null) return
+	if(animate){
+		if(visible) {
+			if(visible && visibility== View.VISIBLE) return
+		} else {
+			if(!visible && visibility!= View.VISIBLE) return
+		}
+	} else {
+		if(visible){
+			this.visibility = View.VISIBLE
+		}else{
+			if(holdSpaceOnDisappear){
+				this.visibility = View.INVISIBLE
+			}else{
+				this.visibility = View.GONE
+			}
+		}
+	}
 }

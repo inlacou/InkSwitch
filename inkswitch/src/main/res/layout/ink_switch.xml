@@ -14,15 +14,26 @@
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		/>
-	<View
-		android:id="@+id/inkswitch_marker"
-		android:layout_width="0dp"
-		android:layout_height="0dp"
-		/>
 	<LinearLayout
 		android:id="@+id/inkswitch_displays"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:orientation="horizontal"
 		/>
+	<RelativeLayout
+		android:id="@+id/inkswitch_marker"
+		android:layout_width="0dp"
+		android:layout_height="0dp">
+		<TextView
+			android:id="@+id/inkswitch_marker_item_text"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:gravity="center"
+			android:layout_centerInParent="true"/>
+		<ImageView
+			android:id="@+id/inkswitch_marker_item_icon"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_centerInParent="true"/>
+	</RelativeLayout>
 </RelativeLayout>
