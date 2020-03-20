@@ -52,7 +52,6 @@ class InkSwitch: FrameLayout {
 	private var displays: LinearLayout? = null
 	private var touchDownTimestamp = 0L
 	
-	//FIXME when move by click, listeners are not fired
 	//TODO add a way to change marker background color
 	
 	/**
@@ -329,6 +328,7 @@ class InkSwitch: FrameLayout {
 						if(newPosition!=currentPosition){
 							currentPosition = newPosition
 							onValueSetListener?.invoke(currentPosition, true)
+							onValueChangeListener?.invoke(currentPosition, true)
 							startUpdate(animate = onClickBehaviour.animate, duration = animationDuration)
 						}
 					}else{
@@ -342,13 +342,21 @@ class InkSwitch: FrameLayout {
 		}
 	}
 	
+	fun moveToNext() {
+		val newPosition = when {
+			currentPosition<(items?.size ?: 0)-1 -> currentPosition+1
+			else -> 0
+		}
+		if(newPosition!=currentPosition){
+			currentPosition = newPosition
+			onValueSetListener?.invoke(currentPosition, true)
+			startUpdate(animate = onClickBehaviour.animate, duration = animationDuration)
+		}
+	}
+	
 	private fun actAsIfMoved(x: Float) {
-		var changed = false
 		val newPosition = getItemPositionFromClickOnViewWithMargins(clickX = x, margin = innerMargin, itemWidth = itemWidth, itemNumber = items?.size ?: 0)
-		println("InkSwitch | current position: $currentPosition")
-		println("InkSwitch | new position:     $newPosition")
 		if (currentPosition!=newPosition) {
-			changed = true
 			onValueChangeListener?.invoke(newPosition, true)
 		}
 		currentPosition = newPosition

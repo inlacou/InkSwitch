@@ -69,7 +69,10 @@ class FirstFragment : Fragment() {
 		
 		inkswitch_example.onValueChangeListener = { index, fromUser -> Toast.makeText(context!!, index.toString(), Toast.LENGTH_LONG).show() }
 		
-		view.findViewById<Button>(R.id.button_first).setOnClickListener { findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment) }
+		view.findViewById<Button>(R.id.button_first).setOnClickListener {
+			inkswitch_example?.moveToNext()
+			//findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+		}
 	}
 }
 
