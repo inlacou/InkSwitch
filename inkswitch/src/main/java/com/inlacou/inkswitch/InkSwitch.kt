@@ -52,6 +52,9 @@ class InkSwitch: FrameLayout {
 	private var displays: LinearLayout? = null
 	private var touchDownTimestamp = 0L
 	
+	//FIXME when move by click, listeners are not fired
+	//TODO add a way to change marker background color
+	
 	/**
 	 * Color array, not color resource array
 	 */
