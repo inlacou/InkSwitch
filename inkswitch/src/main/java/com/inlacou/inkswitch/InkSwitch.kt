@@ -242,7 +242,7 @@ class InkSwitch: FrameLayout {
 		lightUpdate()
 	}
 	
-	fun initialize() {
+	init {
 		val rootView = View.inflate(context, R.layout.ink_switch, this)
 		clickableView = rootView.findViewById(R.id.inkswitch_clickable)
 		backgroundView = rootView.findViewById(R.id.inkswitch_background)
@@ -250,6 +250,9 @@ class InkSwitch: FrameLayout {
 		markerItemTextView = rootView.findViewById(R.id.inkswitch_marker_item_text)
 		markerItemIconView = rootView.findViewById(R.id.inkswitch_marker_item_icon)
 		displays = rootView.findViewById(R.id.inkswitch_displays)
+	}
+	
+	fun initialize() {
 		backgroundView?.let { it.onDrawn(false) { lightUpdate() } }
 		clickableView?.centerVertical()
 		backgroundView?.centerVertical()
@@ -396,13 +399,13 @@ class InkSwitch: FrameLayout {
 			displays?.addView(it)
 		}
 		displays?.layoutParams?.width  = totalWidth.roundToInt()
-		displays?.layoutParams?.height = (itemHeight+innerMargin*2).roundToInt()
+		displays?.layoutParams?.height = totalHeight.roundToInt()
 		markerView?.layoutParams?.width = itemWidth.roundToInt()
 		markerView?.layoutParams?.height = itemHeight.roundToInt()
 		clickableView?.layoutParams?.width  = totalWidth.roundToInt()
 		clickableView?.layoutParams?.height = max(itemHeight.roundToInt(), height)
 		backgroundView?.layoutParams?.width  = totalWidth.roundToInt()
-		backgroundView?.layoutParams?.height = (itemHeight+innerMargin*2).roundToInt()
+		backgroundView?.layoutParams?.height = totalHeight.roundToInt()
 		markerItemTextView?.layoutParams?.width = itemWidth.roundToInt()
 		markerItemTextView?.layoutParams?.height = itemHeight.roundToInt()
 		markerItemIconView?.layoutParams?.width = itemWidth.roundToInt()
