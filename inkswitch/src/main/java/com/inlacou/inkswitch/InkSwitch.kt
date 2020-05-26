@@ -2,7 +2,6 @@ package com.inlacou.inkswitch
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -37,9 +36,9 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 class InkSwitch: FrameLayout {
-	constructor(context: Context) : super(context)
-	constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet) { readAttrs(attrSet) }
-	constructor(context: Context, attrSet: AttributeSet, arg: Int) : super(context, attrSet, arg) { readAttrs(attrSet) }
+	constructor(context: Context) : super(context) { initialize() }
+	constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet) { readAttrs(attrSet); initialize() }
+	constructor(context: Context, attrSet: AttributeSet, arg: Int) : super(context, attrSet, arg) { readAttrs(attrSet); initialize() }
 	
 	private var initialTouchPosition: Float? = null
 	private lateinit var listener: ViewTreeObserver.OnGlobalLayoutListener
@@ -243,7 +242,7 @@ class InkSwitch: FrameLayout {
 		lightUpdate()
 	}
 	
-	init {
+	fun initialize() {
 		val rootView = View.inflate(context, R.layout.ink_switch, this)
 		clickableView = rootView.findViewById(R.id.inkswitch_clickable)
 		backgroundView = rootView.findViewById(R.id.inkswitch_background)
@@ -397,13 +396,13 @@ class InkSwitch: FrameLayout {
 			displays?.addView(it)
 		}
 		displays?.layoutParams?.width  = totalWidth.roundToInt()
-		displays?.layoutParams?.height = totalHeight.roundToInt()
+		displays?.layoutParams?.height = (itemHeight+innerMargin*2).roundToInt()
 		markerView?.layoutParams?.width = itemWidth.roundToInt()
 		markerView?.layoutParams?.height = itemHeight.roundToInt()
 		clickableView?.layoutParams?.width  = totalWidth.roundToInt()
 		clickableView?.layoutParams?.height = max(itemHeight.roundToInt(), height)
 		backgroundView?.layoutParams?.width  = totalWidth.roundToInt()
-		backgroundView?.layoutParams?.height = totalHeight.roundToInt()
+		backgroundView?.layoutParams?.height = (itemHeight+innerMargin*2).roundToInt()
 		markerItemTextView?.layoutParams?.width = itemWidth.roundToInt()
 		markerItemTextView?.layoutParams?.height = itemHeight.roundToInt()
 		markerItemIconView?.layoutParams?.width = itemWidth.roundToInt()
