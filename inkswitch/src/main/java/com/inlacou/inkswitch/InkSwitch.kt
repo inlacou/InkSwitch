@@ -258,6 +258,25 @@ class InkSwitch: FrameLayout {
 		markerView?.alignParentLeft()
 		markerItemTextView?.matchParent()
 		markerItemIconView?.matchParent()
+		if(isInEditMode){
+			items = listOf(
+					InkSwitchItemText(
+							text = "OFF",
+							padding = 5,
+							textIconColorActive = resources.getColorCompat(R.color.inkswitch_background_default),
+							textIconColorInactive = resources.getColorCompat(R.color.inkswitch_transparent),
+							backgroundColor = resources.getColorCompat(R.color.inkswitch_background_default),
+							textSize = 16f, textStyle = InkSwitchItemText.TextStyle.ITALIC
+					),
+					InkSwitchItemText(
+							text = "ON",
+							padding = 5,
+							textIconColorActive = resources.getColorCompat(R.color.inkswitch_active_default),
+							textIconColorInactive = resources.getColorCompat(R.color.inkswitch_transparent),
+							backgroundColor = resources.getColorCompat(R.color.inkswitch_active_default),
+							textSize = 24f, textStyle = InkSwitchItemText.TextStyle.BOLD
+					))
+		}
 	}
 	
 	override fun onAttachedToWindow() {
@@ -454,6 +473,7 @@ class InkSwitch: FrameLayout {
 			}
 		}
 	}
+	
 	private fun updatePosition(animate: Boolean) {
 		markerView?.setMargins(left = innerMargin.toInt()+(if(animate) progressVisual else progress).toInt(), right = innerMargin.toInt(), top = innerMargin.toInt(), bottom = innerMargin.toInt())
 	}

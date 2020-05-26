@@ -2,6 +2,7 @@
 <resources>
 	<color name="inkswitch_marker_default">#FFF</color>
 	<color name="inkswitch_background_default">#000</color>
+	<color name="inkswitch_active_default">#5A5</color>
 	<color name="inkswitch_text_default_inactive">#FFF</color>
 	<color name="inkswitch_text_default_active">#000</color>
 	<color name="inkswitch_transparent">#00F0</color>
