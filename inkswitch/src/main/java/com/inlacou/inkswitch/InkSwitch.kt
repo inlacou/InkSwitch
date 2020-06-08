@@ -253,7 +253,7 @@ class InkSwitch: FrameLayout {
 	}
 	
 	fun initialize() {
-		backgroundView?.let { it.onDrawn(false) { lightUpdate() } }
+		backgroundView?.let { it.onDrawn(false) { lightUpdate(from = "onDrawn") } }
 		clickableView?.centerVertical()
 		backgroundView?.centerVertical()
 		markerView?.centerVertical()
@@ -313,7 +313,7 @@ class InkSwitch: FrameLayout {
 	@SuppressLint("ClickableViewAccessibility")
 	private fun setListeners() {
 		listener = ViewTreeObserver.OnGlobalLayoutListener {
-			lightUpdate()
+			lightUpdate(from = "OnGlobalLayoutListener")
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) { viewTreeObserver?.removeOnGlobalLayoutListener(listener) }
 		}
 		viewTreeObserver?.addOnGlobalLayoutListener(listener)
@@ -429,8 +429,8 @@ class InkSwitch: FrameLayout {
 		}
 	}
 	
-	private fun lightUpdate(animate: Boolean = false) {
-		println("updates | lightUpdate")
+	private fun lightUpdate(animate: Boolean = false, from: String = "") {
+		println("updates | lightUpdate | from: $from")
 		displays?.setPadding(innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt())
 		updateDisplayContents(animate)
 		updateDisplayColors(animate)
@@ -489,14 +489,14 @@ class InkSwitch: FrameLayout {
 			println("InkSwitch | updateAnimated - nope")
 			try{ disposable?.dispose() } catch (e: Exception) {} //We stop the animation in progress if a no-animation-update is requested
 			updateBackground(animate = false)
-			lightUpdate(animate = false)
+			lightUpdate(animate = false, from = "startUpdate")
 		}
 	}
 	
 	private fun makeUpdate() {
 		progressVisual = progress
 		updateBackground(true)
-		lightUpdate(true)
+		lightUpdate(true, from = "makeUpdate")
 	}
 	
 	private fun tryUpdateAnimated(duration: Long, delay: Long) {
