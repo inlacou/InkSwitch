@@ -4,7 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".SecondFragment">
+	tools:context=".Fragment2">
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
 		app:itemWidth="100dp"
 		app:itemHeight="100dp"
 		app:editModeItemNumber="3"
-		app:corners="0dp"
+		app:corners="16dp"
 		app:innerMargin="0dp"
 		app:layout_constraintBottom_toTopOf="@id/button_second"
 		app:layout_constraintEnd_toEndOf="parent"
@@ -52,7 +52,7 @@
 		android:id="@+id/button_second"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="@string/previous"
+		android:text="@string/next"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"

@@ -7,13 +7,19 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.inlacou.inkswitch.InkSwitchConfig
 
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		if(BuildConfig.DEBUG) {
+			Timber.plant(Timber.DebugTree())
+			InkSwitchConfig.log = true
+		}
 		setContentView(R.layout.activity_main)
 		setSupportActionBar(toolbar)
 	}

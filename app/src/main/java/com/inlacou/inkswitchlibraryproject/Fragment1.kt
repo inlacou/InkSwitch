@@ -10,19 +10,19 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.inlacou.inkswitch.InkSwitch
 import com.inlacou.inkswitch.data.InkSwitchItemText
-import kotlinx.android.synthetic.main.fragment_first.*
+import kotlinx.android.synthetic.main.fragment_1.*
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment() {
+class Fragment1 : Fragment() {
 	
 	override fun onCreateView(
 			inflater: LayoutInflater, container: ViewGroup?,
 			savedInstanceState: Bundle?
 	): View? {
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_first, container, false)
+		return inflater.inflate(R.layout.fragment_1, container, false)
 	}
 	
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,11 +67,11 @@ class FirstFragment : Fragment() {
 			inkswitch_example?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToSelected(index==1)
 		}
 		
-		inkswitch_example.onValueChangeListener = { index, fromUser -> Toast.makeText(context!!, index.toString(), Toast.LENGTH_LONG).show() }
+		inkswitch_example.onValueChangeListener = { index, fromUser -> Toast.makeText(requireContext(), index.toString(), Toast.LENGTH_LONG).show() }
 		
 		view.findViewById<Button>(R.id.button_first).setOnClickListener {
-			inkswitch_example?.moveToNext()
-			//findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+			//inkswitch_example?.moveToNext()
+			findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
 		}
 	}
 }

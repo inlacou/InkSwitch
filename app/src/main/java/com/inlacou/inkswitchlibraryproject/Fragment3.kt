@@ -11,19 +11,19 @@ import androidx.navigation.fragment.findNavController
 import com.inlacou.inkswitch.InkSwitch
 import com.inlacou.inkswitch.data.InkSwitchItemIcon
 import com.inlacou.inkswitch.data.InkSwitchItemText
-import kotlinx.android.synthetic.main.fragment_first.*
+import kotlinx.android.synthetic.main.fragment_3.*
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class SecondFragment : Fragment() {
+class Fragment3 : Fragment() {
 	
 	override fun onCreateView(
 			inflater: LayoutInflater, container: ViewGroup?,
 			savedInstanceState: Bundle?
 	): View? {
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_second, container, false)
+		return inflater.inflate(R.layout.fragment_2, container, false)
 	}
 	
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,12 +31,12 @@ class SecondFragment : Fragment() {
 		
 		inkswitch_example?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToNext(false)
 		inkswitch_example?.items = listOf(
-				InkSwitchItemIcon(iconResId = R.drawable.space_invader),
-				InkSwitchItemIcon(iconResId = R.drawable.space_invader),
-				InkSwitchItemIcon(iconResId = R.drawable.space_invader))
+				InkSwitchItemText(text = "OFF", textIconColorActive = resources.getColorCompat(R.color.basic_red), textIconColorInactive = resources.getColorCompat(R.color.basic_red_dark)),
+				InkSwitchItemIcon(iconResId = R.drawable.space_invader, textIconColorActive = resources.getColorCompat(R.color.basic_cyan), textIconColorInactive = resources.getColorCompat(R.color.basic_blue)),
+				InkSwitchItemIcon(iconResId = R.drawable.space_invader_4, textIconColorActive = resources.getColorCompat(R.color.basic_green), textIconColorInactive = resources.getColorCompat(R.color.basic_green_dark)))
 		
 		inkswitch_example.onValueSetListener = { index, fromUser ->
-			Toast.makeText(context!!, index.toString(), Toast.LENGTH_LONG).show()
+			Toast.makeText(requireContext(), index.toString(), Toast.LENGTH_LONG).show()
 		}
 		
 		inkswitch_animate?.items = listOf(
@@ -61,7 +61,7 @@ class SecondFragment : Fragment() {
 		}
 		
 		view.findViewById<Button>(R.id.button_second).setOnClickListener {
-			findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+			findNavController().navigate(R.id.action_ThirdFragment_to_FirstFragment)
 		}
 	}
 }

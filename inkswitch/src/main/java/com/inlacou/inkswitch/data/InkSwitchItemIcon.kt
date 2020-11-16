@@ -1,16 +1,14 @@
 package com.inlacou.inkswitch.data
 
-import com.inlacou.inkswitch.data.InkSwitchItem
-
-class InkSwitchItemIcon(
-		backgroundColor: Int? = null,
-		textIconColorActive: Int? = null,
-		textIconColorInactive: Int? = null,
-		padding: Int? = null,
+data class InkSwitchItemIcon(
+		override var backgroundColor: Int? = null,
+		override var textIconColorActive: Int? = null,
+		override var textIconColorInactive: Int? = null,
+		override var padding: Int = 0,
 		val iconResId: Int
 ): InkSwitchItem(
 		backgroundColor = backgroundColor,
 		textIconColorActive = textIconColorActive,
 		textIconColorInactive = textIconColorInactive,
-		padding = padding ?: 0
+		padding = padding
 )

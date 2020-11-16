@@ -1,10 +1,10 @@
 package com.inlacou.inkswitch.data
 
 abstract class InkSwitchItem(
-		val backgroundColor: Int?,
-		val textIconColorActive: Int?,
-		val textIconColorInactive: Int?,
-		val padding: Int) {
+		open val backgroundColor: Int?,
+		open val textIconColorActive: Int?,
+		open val textIconColorInactive: Int?,
+		open val padding: Int) {
 	
 	override fun toString(): String {
 		return "padding: $padding " +

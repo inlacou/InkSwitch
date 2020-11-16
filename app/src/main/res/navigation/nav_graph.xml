@@ -7,9 +7,9 @@
 
 	<fragment
 		android:id="@+id/FirstFragment"
-		android:name="com.inlacou.inkswitchlibraryproject.FirstFragment"
+		android:name="com.inlacou.inkswitchlibraryproject.Fragment1"
 		android:label="@string/first_fragment_label"
-		tools:layout="@layout/fragment_first">
+		tools:layout="@layout/fragment_1">
 
 		<action
 			android:id="@+id/action_FirstFragment_to_SecondFragment"
@@ -17,12 +17,22 @@
 	</fragment>
 	<fragment
 		android:id="@+id/SecondFragment"
-		android:name="com.inlacou.inkswitchlibraryproject.SecondFragment"
+		android:name="com.inlacou.inkswitchlibraryproject.Fragment2"
 		android:label="@string/second_fragment_label"
-		tools:layout="@layout/fragment_second">
+		tools:layout="@layout/fragment_2">
 
 		<action
-			android:id="@+id/action_SecondFragment_to_FirstFragment"
+			android:id="@+id/action_SecondFragment_to_ThirdFragment"
+			app:destination="@id/ThirdFragment" />
+	</fragment>
+	<fragment
+		android:id="@+id/ThirdFragment"
+		android:name="com.inlacou.inkswitchlibraryproject.Fragment3"
+		android:label="@string/third_fragment_label"
+		tools:layout="@layout/fragment_3">
+
+		<action
+			android:id="@+id/action_ThirdFragment_to_FirstFragment"
 			app:destination="@id/FirstFragment" />
 	</fragment>
 </navigation>

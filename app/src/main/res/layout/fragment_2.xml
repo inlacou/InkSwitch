@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".Fragment2">
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textSize="32sp"
+		app:layout_constraintBottom_toTopOf="@id/inkswitch_example"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		android:gravity="center"
+		android:text="On click move to next item"/>
+	<com.inlacou.inkswitch.InkSwitch
+		android:id="@+id/inkswitch_example"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:itemWidth="100dp"
+		app:itemHeight="100dp"
+		app:editModeItemNumber="3"
+		app:corners="0dp"
+		app:innerMargin="0dp"
+		app:layout_constraintBottom_toTopOf="@id/button_second"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center"
+		app:layout_constraintBottom_toTopOf="@id/inkswitch_example"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/button_second">
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="24sp"
+			android:layout_marginRight="16dp"
+			android:text="Animate:"/>
+		<com.inlacou.inkswitch.InkSwitch
+			android:id="@+id/inkswitch_animate"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+	<Button
+		android:id="@+id/button_second"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/next"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/inkswitch_example" />
+</androidx.constraintlayout.widget.ConstraintLayout>
