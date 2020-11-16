@@ -23,7 +23,7 @@ class Fragment3 : Fragment() {
 			savedInstanceState: Bundle?
 	): View? {
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_2, container, false)
+		return inflater.inflate(R.layout.fragment_3, container, false)
 	}
 	
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,10 +31,14 @@ class Fragment3 : Fragment() {
 		
 		inkswitch_example?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToNext(false)
 		inkswitch_example?.items = listOf(
-				InkSwitchItemText(text = "OFF", textIconColorActive = resources.getColorCompat(R.color.basic_red), textIconColorInactive = resources.getColorCompat(R.color.basic_red_dark)),
-				InkSwitchItemIcon(iconResId = R.drawable.space_invader, textIconColorActive = resources.getColorCompat(R.color.basic_cyan), textIconColorInactive = resources.getColorCompat(R.color.basic_blue)),
-				InkSwitchItemIcon(iconResId = R.drawable.space_invader_4, textIconColorActive = resources.getColorCompat(R.color.basic_green), textIconColorInactive = resources.getColorCompat(R.color.basic_green_dark)))
-		
+				InkSwitchItemText(text = "OFF",
+						textIconColorActive = resources.getColorCompat(R.color.basic_red), textIconColorInactive = resources.getColorCompat(R.color.basic_red_dark), backgroundColor = resources.getColorCompat(R.color.basic_grey)),
+				InkSwitchItemIcon(iconResId = R.drawable.space_invader, iconWidth = 28.57f, iconHeight = 28.57f,
+						textIconColorActive = resources.getColorCompat(R.color.basic_cyan), textIconColorInactive = resources.getColorCompat(R.color.basic_blue), backgroundColor = resources.getColorCompat(R.color.basic_grey)),
+				InkSwitchItemIcon(iconResId = R.drawable.space_invader_4, iconWidth = 28.57f, iconHeight = 28.57f,
+						textIconColorActive = resources.getColorCompat(R.color.basic_green), textIconColorInactive = resources.getColorCompat(R.color.basic_green_dark), backgroundColor = resources.getColorCompat(R.color.basic_grey))
+		)
+
 		inkswitch_example.onValueSetListener = { index, fromUser ->
 			Toast.makeText(requireContext(), index.toString(), Toast.LENGTH_LONG).show()
 		}

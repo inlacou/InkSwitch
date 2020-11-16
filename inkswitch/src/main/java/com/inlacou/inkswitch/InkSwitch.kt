@@ -11,10 +11,7 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.inlacou.inkswitch.animations.Interpolable
 import com.inlacou.inkswitch.animations.easetypes.EaseType
 import com.inlacou.inkswitch.data.InkSwitchItem
@@ -389,18 +386,47 @@ class InkSwitch: FrameLayout {
 		displays?.removeAllViews()
 		items?.mapNotNull {
 			when (it) {
-				is InkSwitchItemText -> TextView(context).apply { text = it.text; gravity = Gravity.CENTER }
-				is InkSwitchItemIcon -> ImageView(context).apply { setImageDrawable(context.getDrawableCompat(it.iconResId)) }
+				is InkSwitchItemText -> TextView(context).apply {
+					text = it.text
+					gravity = Gravity.CENTER
+					layoutParams = RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+						addRule(RelativeLayout.CENTER_HORIZONTAL)
+						addRule(RelativeLayout.CENTER_VERTICAL)
+						width = itemWidth.toInt()
+						height = itemHeight.toInt()
+					}
+				}
+				is InkSwitchItemIcon -> ImageView(context).apply {
+					setImageDrawable(context.getDrawableCompat(it.iconResId))
+					resize(it.iconWidth?.toInt(), it.iconHeight?.toInt())
+					layoutParams = RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+						addRule(RelativeLayout.CENTER_HORIZONTAL)
+						addRule(RelativeLayout.CENTER_VERTICAL)
+						width = it.iconWidth?.toInt() ?: itemWidth.toInt()
+						height = it.iconHeight?.toInt() ?: itemHeight.toInt()
+					}
+				}
 				else -> null
 			}
+		}?.map {
+			RelativeLayout(context).apply {
+				layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+					width = itemWidth.toInt()
+					height = itemHeight.toInt()
+				}
+				addView(it)
+			}
 		}?.forEach {
-			it.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-			it.layoutParams?.width = itemWidth.toInt()
-			it.layoutParams?.height = itemHeight.toInt()
 			displays?.addView(it)
 		}
 		displays?.layoutParams?.width  = totalWidth.roundToInt()
 		displays?.layoutParams?.height = totalHeight.roundToInt()
+		displays?.layoutParams?.let {
+			if(it is RelativeLayout.LayoutParams) {
+				it.addRule(RelativeLayout.CENTER_HORIZONTAL)
+				it.addRule(RelativeLayout.CENTER_VERTICAL)
+			}
+		}
 		markerView?.layoutParams?.width = itemWidth.roundToInt()
 		markerView?.layoutParams?.height = itemHeight.roundToInt()
 		clickableView?.layoutParams?.width  = totalWidth.roundToInt()
@@ -411,6 +437,7 @@ class InkSwitch: FrameLayout {
 		markerItemTextView?.layoutParams?.height = itemHeight.roundToInt()
 		markerItemIconView?.layoutParams?.width = itemWidth.roundToInt()
 		markerItemIconView?.layoutParams?.height = itemHeight.roundToInt()
+		updateBackground(false)
 	}
 	
 	private fun transitionUpdate() {
@@ -433,27 +460,28 @@ class InkSwitch: FrameLayout {
 	private fun lightUpdate(animate: Boolean = false, from: String = "") {
 		log("updates | lightUpdate | from: $from")
 		displays?.setPadding(innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt(), innerMargin.toInt())
-		updateDisplayContents(animate)
+		updateDisplays(animate)
 		updateDisplayColors(animate)
 		updatePosition(animate)
 	}
 	
-	private fun updateDisplayContents(animate: Boolean) {
-		displays?.childViews?.forEachIndexed { index, view ->
+	private fun updateDisplays(animate: Boolean) {
+		displays?.childViews?.map { it as RelativeLayout }?.mapNotNull { it.childViews.firstOrNull() }?.forEachIndexed { index, view ->
 			val item = items?.get(index)
 			if(item!=null) {
 				view.setVisible(index!=currentPosition, holdSpaceOnDisappear = true)
 				if (index==currentPosition) {
 					if(item is InkSwitchItemIcon) {
-						log("currentItem: $item")
+						log("currentItem icon: $item")
 						markerItemIconView?.setImageDrawable(context.getDrawableCompat(item.iconResId))
-						markerItemTextView.setVisible(false, false)
-						markerItemIconView.setVisible(true, true)
+						markerItemTextView.setVisible(false, holdSpaceOnDisappear = false)
+						markerItemIconView.setVisible(true, holdSpaceOnDisappear = true)
+						markerItemIconView?.resize(item.iconWidth?.toInt(), item.iconHeight?.toInt())
 					} else if(item is InkSwitchItemText) {
-						log("currentItem: $item")
+						log("currentItem text: $item")
 						markerItemTextView?.text = item.text
-						markerItemTextView.setVisible(true, true)
-						markerItemIconView.setVisible(false, false)
+						markerItemTextView.setVisible(true, holdSpaceOnDisappear = true)
+						markerItemIconView.setVisible(false, holdSpaceOnDisappear = false)
 						item.textSize?.let { markerItemTextView?.textSize = it }
 						markerItemTextView?.let { it.setTypeface(it.typeface, item.textStyle.value) }
 					}
@@ -464,12 +492,11 @@ class InkSwitch: FrameLayout {
 	}
 	
 	private fun updateDisplayColors(animate: Boolean) {
-		displays?.childViews?.forEachIndexed { index, view ->
-			val item = items?.get(index)
-			if(item!=null) {
+		displays?.childViews?.map { it as RelativeLayout }?.mapNotNull { it.childViews.firstOrNull() }?.forEachIndexed { index, view ->
+			items?.get(index)?.let { item -> //Get item associated with index
 				view.setVisible(index!=currentPosition, holdSpaceOnDisappear = true)
 				if (index==currentPosition) {
-					previousItem?.backgroundColor?.mergeColors(currentItem?.backgroundColor, if(animate) animationPercentage else 1f)
+					//Not doing anything previousItem?.backgroundColor?.mergeColors(currentItem?.backgroundColor, if(animate) animationPercentage else 1f)
 					markerItemTextView?.setTextColor(item.textIconColorActive  ?: baseTextIconColorActive)
 					markerItemIconView?.tintByColor(item.textIconColorActive  ?: baseTextIconColorActive)
 				}else{
@@ -518,7 +545,7 @@ class InkSwitch: FrameLayout {
 						log("InkSwitch | animationPercentage: $animationPercentage/$animationPercentageRequired")
 						updateBackground(true)
 						if(it==0L) {
-							updateDisplayContents(true)
+							updateDisplays(true)
 							updateDisplayColors(true)
 						}
 						if(it in delay .. (delay+duration)) {
@@ -548,21 +575,24 @@ class InkSwitch: FrameLayout {
 	 * @return colors list of 2 or more items. Always. So we can build a GrandientDrawable.
 	 */
 	private fun getBackgroundColor(view: View?, animate: Boolean): List<Int> {
-		log("InkSwitch | getBackgroundColor: ${view?.stringId} | currentItem ($currentPosition) | animationPercentage: $animationPercentage")
+		log("InkSwitch | getBackgroundColor | target view: ${view?.stringId} | currentItem: $currentPosition | animationPercentage: $animationPercentage")
 		return mutableListOf<Int>().apply {
 					view?.background.let { back ->
 						//Try to get color from background
-						if (back != null && back is ColorDrawable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+						if (back != null && back is ColorDrawable) {
 							add(back.color)
 							add(back.color)
 						} else {
 							//Else get default colors
 							when (view?.id) {
-								R.id.inkswitch_background -> previousItem?.backgroundColor?.mergeColors(currentItem?.backgroundColor, if(animate && onClickBehaviour.animateBackgroundColorChange) animationPercentage else 1f) ?: context.resources.getColorCompat(R.color.inkswitch_background_default)
+								R.id.inkswitch_background ->
+									previousItem?.backgroundColor?.mergeColors(currentItem?.backgroundColor, if(animate && onClickBehaviour.animateBackgroundColorChange) animationPercentage else 1f)
+											?: context.resources.getColorCompat(R.color.inkswitch_background_default)
 								R.id.inkswitch_clickable -> context.resources.getColorCompat(R.color.inkswitch_transparent)
 								R.id.inkswitch_marker -> context.resources.getColorCompat(R.color.inkswitch_marker_default)
 								else -> context.resources.getColorCompat(R.color.inkseekbar_default_default)
 							}.let {
+								log("InkSwitch | getBackgroundColor | color: $it")
 								add(it)
 								add(it)
 							}

@@ -8,22 +8,26 @@
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:background="@color/inkswitch_transparent"
+		android:gravity="center"
 		/>
 	<View
 		android:id="@+id/inkswitch_background"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
+		android:gravity="center"
 		/>
 	<LinearLayout
 		android:id="@+id/inkswitch_displays"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
+		android:gravity="center"
 		android:orientation="horizontal"
 		/>
 	<RelativeLayout
 		android:id="@+id/inkswitch_marker"
 		android:layout_width="0dp"
-		android:layout_height="0dp">
+		android:layout_height="0dp"
+		android:gravity="center">
 		<TextView
 			android:id="@+id/inkswitch_marker_item_text"
 			android:layout_width="0dp"

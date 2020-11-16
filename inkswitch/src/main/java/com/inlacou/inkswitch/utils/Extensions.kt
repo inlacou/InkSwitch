@@ -36,6 +36,15 @@ internal fun View.setMargins(left: Int? = null, top: Int? = null, right: Int? = 
 	}
 }
 
+internal fun View.resize(width: Int? = null, height: Int? = null) {
+	layoutParams?.let {
+		layoutParams = it.apply {
+			if(width!=null) this.width = if(width>-1) width else 0
+			if(height!=null) this.height = if(height>-1) height else 0
+		}
+	}
+}
+
 internal val now get() = System.currentTimeMillis()
 
 internal fun View.setBackgroundCompat(drawable: Drawable){
