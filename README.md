@@ -9,15 +9,15 @@ Animation works only if rxjava2 (rxjava2:rxjava and rxjava2:rxandroid) or rxjava
 ### Behaviour
 
 ##### JustSwipe
-On click will move to selected, but also allows swipe gesture.
+On click will move to selected, but also allows swipe gesture.  
 Can't be animated.
 
 ##### OnClickMoveToNext
-On click (anywhere) will move to next (from left to right).
+On click (anywhere) will move to next (from left to right).  
 Can be animated.
 
 ##### OnClickMoveToSelected
-On click will move to selected item. If clicked the currently selected, no change.
+On click will move to selected item. If clicked the currently selected, no change.  
 Can be animated.
 
 ### Appearance
