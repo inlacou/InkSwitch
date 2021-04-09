@@ -45,8 +45,8 @@ On click will move to selected item. If clicked the currently selected, no chang
 ```xml
   <com.inlacou.inkswitch.InkSwitch
     android:id="@+id/inkswitch"
-    android:layout_width="70dp"
-    android:layout_height="38dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     app:itemWidth="30dp"
     app:itemHeight="30dp"
     app:innerMargin="4dp"/>
