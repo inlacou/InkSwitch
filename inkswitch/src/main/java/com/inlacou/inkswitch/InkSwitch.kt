@@ -672,8 +672,20 @@ class InkSwitch: FrameLayout {
 	}
 	
 	sealed class OnClickBehaviour(val animate: Boolean, val animateBackgroundColorChange: Boolean) {
+		/**
+		 * On click will move to selected, but also allows swipe gesture.
+		 * Not animable.
+		 */
 		class JustSwipe: OnClickBehaviour(false, false)
+		/**
+		 * On click (anywhere) will move to next (from left to right).
+		 * Animable.
+		 */
 		class OnClickMoveToNext(animate: Boolean = false, animateBackgroundColorChange: Boolean = false): OnClickBehaviour(animate, animateBackgroundColorChange)
+		/**
+		 * On click will move to selected item. If clicked the currently selected, no change.
+		 * Animable.
+		 */
 		class OnClickMoveToSelected(animate: Boolean = false, animateBackgroundColorChange: Boolean = false): OnClickBehaviour(animate, animateBackgroundColorChange)
 	}
 	
@@ -684,5 +696,5 @@ class InkSwitch: FrameLayout {
 			Log.d("InkSwitch", s)
 		}
 	}
-	
+
 }
