@@ -40,7 +40,8 @@ class InkSwitch: FrameLayout {
 	
 	private var initialTouchPosition: Float? = null
 	private lateinit var listener: ViewTreeObserver.OnGlobalLayoutListener
-	private var disposable: Disposable? = null
+	private var disposable2: Disposable? = null
+	private var disposable3: io.reactivex.rxjava3.disposables.Disposable? = null
 	private var clickableView: View? = null
 	private var backgroundView: View? = null
 	private var markerView: View? = null
@@ -250,7 +251,7 @@ class InkSwitch: FrameLayout {
 		displays = rootView.findViewById(R.id.inkswitch_displays)
 	}
 	
-	fun initialize() {
+	private fun initialize() {
 		backgroundView?.let { it.onDrawn(false) { lightUpdate(from = "onDrawn") } }
 		clickableView?.centerVertical()
 		backgroundView?.centerVertical()
@@ -521,7 +522,8 @@ class InkSwitch: FrameLayout {
 			tryUpdateAnimated(duration, delay)
 		}else{
 			log("InkSwitch | updateAnimated - nope")
-			try{ disposable?.dispose() } catch (e: Exception) {} //We stop the animation in progress if a no-animation-update is requested
+			try{ disposable2?.dispose() } catch (e: Exception) {} //We stop the animation in progress if a no-animation-update is requested
+			try{ disposable3?.dispose() } catch (e: Exception) {} //We stop the animation in progress if a no-animation-update is requested
 			updateBackground(animate = false)
 			lightUpdate(animate = false, from = "startUpdate")
 		}
@@ -536,8 +538,8 @@ class InkSwitch: FrameLayout {
 	private fun tryUpdateAnimated(duration: Long, delay: Long) {
 		log("InkSwitch | tryUpdateAnimated | animationPercentage: $animationPercentage/$animationPercentageRequired")
 		try {
-			disposable?.dispose()
-			disposable = Observable.interval(0,10L, TimeUnit.MILLISECONDS)
+			disposable2?.dispose()
+			disposable2 = Observable.interval(0,10L, TimeUnit.MILLISECONDS)
 					.doOnDispose {
 						animationPercentage = 1f
 					}.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).map { it * 10L }.subscribe({
@@ -551,7 +553,7 @@ class InkSwitch: FrameLayout {
 						if(it in delay .. (delay+duration)) {
 							progressVisual = previousProgress + (progress-previousProgress) * easeType.getOffset(((it-delay)/10L).toFloat() / (duration / 10L))
 							log("InkSwitch | on disposable progressVisual: $progressVisual")
-						}else { disposable?.dispose() }
+						}else { disposable2?.dispose() }
 						updatePosition(true)
 					}, {
 						animationPercentage = 1f
@@ -559,7 +561,34 @@ class InkSwitch: FrameLayout {
 						animationPercentage = 1f
 					})
 		}catch (e: NoClassDefFoundError) {
-			Log.w("InkSwitch", "update animation failed, RX library not found. Fault back to non-animated updated")
+			Log.w("InkSwitch", "update animation failed, RX2 library not found. Fault back to non-animated updated")
+			makeUpdate()
+		}
+		try {
+			disposable3?.dispose()
+			disposable3 = io.reactivex.rxjava3.core.Observable.interval(0,10L, TimeUnit.MILLISECONDS)
+					.doOnDispose {
+						animationPercentage = 1f
+					}.subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.newThread()).observeOn(io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread()).map { it * 10L }.subscribe({
+						animationPercentage = it/(delay+duration).toFloat()
+						log("InkSwitch | animationPercentage: $animationPercentage/$animationPercentageRequired")
+						updateBackground(true)
+						if(it==0L) {
+							updateDisplays(true)
+							updateDisplayColors(true)
+						}
+						if(it in delay .. (delay+duration)) {
+							progressVisual = previousProgress + (progress-previousProgress) * easeType.getOffset(((it-delay)/10L).toFloat() / (duration / 10L))
+							log("InkSwitch | on disposable progressVisual: $progressVisual")
+						}else { disposable3?.dispose() }
+						updatePosition(true)
+					}, {
+						animationPercentage = 1f
+					},{
+						animationPercentage = 1f
+					})
+		}catch (e: NoClassDefFoundError) {
+			Log.w("InkSwitch", "update animation failed, RX3 library not found. Fault back to non-animated updated")
 			makeUpdate()
 		}
 	}

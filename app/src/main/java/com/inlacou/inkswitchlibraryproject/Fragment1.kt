@@ -27,7 +27,25 @@ class Fragment1 : Fragment() {
 	
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		
+
+        inkswitch?.items = listOf(
+            InkSwitchItemText(
+                text = "",
+                textIconColorActive = resources.getColorCompat(R.color.basic_black),
+                textIconColorInactive = resources.getColorCompat(R.color.transparent),
+                backgroundColor = resources.getColorCompat(R.color.basic_black),
+                textSize = 0f
+            ),
+            InkSwitchItemText(
+                text = "",
+                textIconColorActive = resources.getColorCompat(R.color.basic_green),
+                textIconColorInactive = resources.getColorCompat(R.color.transparent),
+                backgroundColor = resources.getColorCompat(R.color.basic_green),
+                textSize = 0f
+            ))
+        inkswitch?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToNext(animate = true)
+
+
 		inkswitch_example?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToSelected(false)
 		inkswitch_example?.items = listOf(
 				InkSwitchItemText(
