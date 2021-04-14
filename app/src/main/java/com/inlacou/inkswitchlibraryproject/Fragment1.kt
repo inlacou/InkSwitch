@@ -46,6 +46,7 @@ class Fragment1 : Fragment() {
 						backgroundColor = resources.getColorCompat(R.color.basic_green),
 						textSize = 24f, textStyle = InkSwitchItemText.TextStyle.BOLD
 				))
+		//Set items, NO and YES for enabled/disabled
 		inkswitch_animate?.items = listOf(
 				InkSwitchItemText(
 						text = "NO",
@@ -53,7 +54,7 @@ class Fragment1 : Fragment() {
 						textIconColorActive = resources.getColorCompat(R.color.basic_black),
 						textIconColorInactive = resources.getColorCompat(R.color.basic_green),
 						backgroundColor = resources.getColorCompat(R.color.basic_black),
-						textSize = 8f, textStyle = InkSwitchItemText.TextStyle.ITALIC
+						textSize = 8f, textStyle = InkSwitchItemText.TextStyle.ITALIC,
 				),
 				InkSwitchItemText(
 						text = "YES",
@@ -61,11 +62,13 @@ class Fragment1 : Fragment() {
 						textIconColorActive = resources.getColorCompat(R.color.basic_green),
 						textIconColorInactive = resources.getColorCompat(R.color.basic_black),
 						backgroundColor = resources.getColorCompat(R.color.basic_green),
-						textSize = 12f, textStyle = InkSwitchItemText.TextStyle.BOLD
+						textSize = 12f, textStyle = InkSwitchItemText.TextStyle.BOLD,
 				))
+		//Set item size and other UI params programmatically
 		inkswitch_animate?.itemWidth = 40f
 		inkswitch_animate?.itemHeight = 40f
 		inkswitch_animate?.innerMargin = 4f
+		//Add listeners
 		inkswitch_animate?.onValueSetListener = { index, fromUser ->
 			inkswitch_example?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToSelected(index==1)
 		}
