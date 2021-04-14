@@ -2,7 +2,7 @@
 
 Import with `implementation 'com.github.inlacou:InkSwitch:'` [![](https://jitpack.io/v/inlacou/InkSwitch.svg)](https://jitpack.io/#inlacou/InkSwitch)
 
-Animation works only if rxjava2 (rxjava2:rxjava and rxjava2:rxandroid) or rxjava3 (rxjava3:rxjava and rxjava3:rxandroid) libraries are present.
+Animation works only if rxjava2 (`rxjava2:rxjava` and `rxjava2:rxandroid`) or rxjava3 (`rxjava3:rxjava` and `rxjava3:rxandroid`) libraries are present.
 
 ## Customization
 
