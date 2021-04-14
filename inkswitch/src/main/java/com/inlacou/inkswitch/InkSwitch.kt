@@ -86,17 +86,17 @@ class InkSwitch: FrameLayout {
 	var innerMargin: Float = 15f
 		set(value) {
 			field = value
-			startUpdate()
+			heavyUpdate()
 		}
 	var itemWidth = 100f
 		set(value) {
 			field = value
-			startUpdate()
+			heavyUpdate()
 		}
 	var itemHeight = 100f
 		set(value) {
 			field = value
-			startUpdate()
+			heavyUpdate()
 		}
 	var items: List<InkSwitchItem>? = null
 		set(value) {
@@ -537,6 +537,8 @@ class InkSwitch: FrameLayout {
 	
 	private fun tryUpdateAnimated(duration: Long, delay: Long) {
 		log("InkSwitch | tryUpdateAnimated | animationPercentage: $animationPercentage/$animationPercentageRequired")
+		var rxjava2 = true
+		var rxjava3 = true
 		try {
 			disposable2?.dispose()
 			disposable2 = Observable.interval(0,10L, TimeUnit.MILLISECONDS)
@@ -561,8 +563,7 @@ class InkSwitch: FrameLayout {
 						animationPercentage = 1f
 					})
 		}catch (e: NoClassDefFoundError) {
-			Log.w("InkSwitch", "update animation failed, RX2 library not found. Fault back to non-animated updated")
-			makeUpdate()
+			rxjava2 = false
 		}
 		try {
 			disposable3?.dispose()
@@ -588,7 +589,10 @@ class InkSwitch: FrameLayout {
 						animationPercentage = 1f
 					})
 		}catch (e: NoClassDefFoundError) {
-			Log.w("InkSwitch", "update animation failed, RX3 library not found. Fault back to non-animated updated")
+			rxjava3 = false
+		}
+		if(!rxjava2 && !rxjava3) {
+			Log.w("InkSwitch", "update animation failed, rxJava2 nor rxJava3 libraries found. Fault back to non-animated update")
 			makeUpdate()
 		}
 	}
