@@ -46,7 +46,10 @@
 		<com.inlacou.inkswitch.InkSwitch
 			android:id="@+id/inkswitch_animate"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" />
+			android:layout_height="wrap_content"
+			app:itemWidth="40dp"
+			app:itemHeight="40dp"
+			app:innerMargin="4dp" />
 	</LinearLayout>
 	<Button
 		android:id="@+id/button_second"

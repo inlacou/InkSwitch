@@ -63,10 +63,12 @@ class Fragment1 : Fragment() {
 						backgroundColor = resources.getColorCompat(R.color.basic_green),
 						textSize = 12f, textStyle = InkSwitchItemText.TextStyle.BOLD
 				))
+		inkswitch_animate?.itemWidth = 40f
+		inkswitch_animate?.itemHeight = 40f
+		inkswitch_animate?.innerMargin = 4f
 		inkswitch_animate?.onValueSetListener = { index, fromUser ->
 			inkswitch_example?.onClickBehaviour = InkSwitch.OnClickBehaviour.OnClickMoveToSelected(index==1)
 		}
-		
 		inkswitch_example.onValueChangeListener = { index, fromUser -> Toast.makeText(requireContext(), index.toString(), Toast.LENGTH_LONG).show() }
 		
 		view.findViewById<Button>(R.id.button_first).setOnClickListener {
