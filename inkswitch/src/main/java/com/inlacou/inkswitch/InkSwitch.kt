@@ -12,8 +12,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.*
-import com.inlacou.inkswitch.animations.Interpolable
-import com.inlacou.inkswitch.animations.easetypes.EaseType
+import com.inlacou.inkanimationtypes.Interpolable
+import com.inlacou.inkanimationtypes.easetypes.EaseType
 import com.inlacou.inkswitch.data.InkSwitchItem
 import com.inlacou.inkswitch.data.InkSwitchItemIcon
 import com.inlacou.inkswitch.data.InkSwitchItemText

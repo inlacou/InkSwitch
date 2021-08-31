@@ -6,7 +6,6 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -14,14 +13,18 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.core.view.get
 import androidx.core.widget.ImageViewCompat
+import com.inlacou.inkswitch.InkSwitch
 import java.util.*
+import io.reactivex.rxjava3.core.Observable
+
+fun InkSwitch.changes(): Observable<Pair<Int, Boolean>> {
+	return Observable.create(InkSwitchObs(this))
+}
 
 internal fun View.onDrawn(continuous: Boolean = false, callback: () -> Unit) {
 	viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 		override fun onGlobalLayout() {
-			if(!continuous) {
-				viewTreeObserver?.removeOnGlobalLayoutListener(this)
-			}
+			if(!continuous) viewTreeObserver?.removeOnGlobalLayoutListener(this)
 			callback.invoke()
 		}
 	})
